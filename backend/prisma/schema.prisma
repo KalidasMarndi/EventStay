@@ -1,0 +1,288 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ORGANIZER
+  ADMIN
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum EventCategory {
+  WEDDING
+  CORPORATE
+  CONFERENCE
+  MICE
+  INCENTIVE
+  CULTURAL
+  MUSIC
+  SPORTS
+  OTHER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  RAZORPAY
+  PAYPAL
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique // Clerk external user ID
+  name      String
+  email     String   @unique
+  avatar    String?
+  phone     String?
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  events   Event[]   @relation("OrganizerEvents")
+  bookings Booking[]
+  reviews  Review[]
+  media    Media[]
+
+  @@index([email])
+  @@index([clerkId])
+  @@map("users")
+}
+
+model Venue {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  address     String
+  city        String
+  state       String
+  country     String   @default("India")
+  latitude    Float?
+  longitude   Float?
+  capacity    Int
+  description String?
+  images      String[]
+  amenities   String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  events Event[]
+  media  Media[]
+
+  @@index([city])
+  @@index([slug])
+  @@map("venues")
+}
+
+model Event {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  description    String
+  category       EventCategory
+  city           String
+  venueId        String
+  organizerId    String
+  startDate      DateTime
+  endDate        DateTime
+  capacity       Int
+  availableSeats Int
+  pricePerHead   Float
+  status         EventStatus   @default(DRAFT)
+  featuredImage  String?
+  tags           String[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  venue        Venue         @relation(fields: [venueId], references: [id])
+  organizer    User          @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  bookings     Booking[]
+  reviews      Review[]
+  media        Media[]
+  stayPackages StayPackage[]
+
+  @@index([slug])
+  @@index([city])
+  @@index([category])
+  @@index([status])
+  @@index([startDate])
+  @@map("events")
+}
+
+model Media {
+  id      String    @id @default(cuid())
+  url     String
+  type    MediaType @default(IMAGE)
+  ownerId String?
+  eventId String?
+  venueId String?
+  stayId  String?
+
+  owner User?  @relation(fields: [ownerId], references: [id])
+  event Event? @relation(fields: [eventId], references: [id])
+  venue Venue? @relation(fields: [venueId], references: [id])
+  stay  Stay?  @relation(fields: [stayId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([eventId])
+  @@index([venueId])
+  @@index([stayId])
+  @@map("media")
+}
+
+model Stay {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  city           String
+  address        String
+  description    String
+  pricePerNight  Float
+  availableRooms Int
+  rating         Float    @default(0)
+  images         String[]
+  amenities      String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  reviews  Review[]
+  media    Media[]
+  packages StayPackage[]
+
+  @@index([city])
+  @@index([slug])
+  @@map("stays")
+}
+
+model StayPackage {
+  id             String   @id @default(cuid())
+  eventId        String
+  stayId         String
+  name           String // e.g., "Sea View Room"
+  description    String?
+  price          Float
+  availableRooms Int
+  capacity       Int      @default(2) // guests per room
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  event    Event     @relation(fields: [eventId], references: [id])
+  stay     Stay      @relation(fields: [stayId], references: [id])
+  bookings Booking[]
+
+  @@index([eventId])
+  @@index([stayId])
+  @@map("stay_packages")
+}
+
+model Booking {
+  id                  String        @id @default(cuid())
+  bookingReference    String        @unique @default(cuid())
+  idempotencyKey      String?       @unique
+  userId              String
+  eventId             String
+  stayPackageId       String? // Optional stay package
+  status              BookingStatus @default(PENDING)
+  quantity            Int           @default(1) // Event tickets
+  stayPackageQuantity Int           @default(0) // Number of rooms
+  totalAmount         Float
+  notes               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id])
+  event       Event        @relation(fields: [eventId], references: [id])
+  stayPackage StayPackage? @relation(fields: [stayPackageId], references: [id])
+  payments    Payment[]
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([stayPackageId])
+  @@index([bookingReference])
+  @@map("bookings")
+}
+
+model Payment {
+  id                String          @id @default(cuid())
+  idempotencyKey    String?         @unique
+  bookingId         String
+  provider          PaymentProvider @default(STRIPE)
+  providerPaymentId String?         @unique
+  amount            Float
+  currency          String          @default("INR")
+  status            PaymentStatus   @default(PENDING)
+  metadata          Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  @@index([bookingId])
+  @@map("payments")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String?
+  stayId    String?
+  rating    Int // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user  User   @relation(fields: [userId], references: [id])
+  event Event? @relation(fields: [eventId], references: [id])
+  stay  Stay?  @relation(fields: [stayId], references: [id])
+
+  @@index([eventId])
+  @@index([stayId])
+  @@index([userId])
+  @@map("reviews")
+}
