@@ -124,7 +124,7 @@ export function DestinationDetailClient({ destination: dest }: { destination: De
                 Create a private event page, hold rooms, and let your guests book seamlessly.
               </p>
               <Link
-                href="/contact"
+                href="/create-event"
                 className="inline-flex items-center gap-2 h-12 px-8 rounded-full bg-[#eab308] text-xs font-mono uppercase tracking-widest text-black hover:bg-white transition-colors duration-300"
               >
                 Create an Event

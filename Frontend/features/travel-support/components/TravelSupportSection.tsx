@@ -80,7 +80,7 @@ export function TravelSupportSection({ limit }: { limit?: number }) {
         {limit && (
           <AnimatedSection direction="up" delay={0.4} className="mt-16 text-center">
             <a 
-              href="/support" 
+              href="/travel-support" 
               className="inline-flex items-center gap-3 px-8 h-12 rounded-full border border-white/20 text-sm font-mono uppercase tracking-widest text-white hover:bg-white hover:text-black transition-colors duration-300"
             >
               View Full Support Capabilities

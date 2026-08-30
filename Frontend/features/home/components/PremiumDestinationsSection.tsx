@@ -2,11 +2,30 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ArrowLeft, Bookmark, MapPin } from "lucide-react";
-import { motion, AnimatePresence, MotionConfig, useMotionValue, useAnimationFrame } from "framer-motion";
+import Link from "next/link";
+import {
+  Bookmark,
+  MapPin,
+  ArrowRight,
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Plane,
+  FileCheck,
+  FileText,
+  Crown,
+  Car,
+  Building,
+  Headphones,
+  CalendarDays,
+  ShieldCheck,
+  Users,
+  Globe,
+  BadgeCheck,
+} from "lucide-react";
+import { motion, AnimatePresence, useAnimationFrame } from "framer-motion";
 import { destinations as rawDestinations } from "@/features/home/data/destinations";
 
-/* Map centralized data to the shape this carousel expects */
 const destinations = rawDestinations.map((d) => ({
   id: d.id,
   country: d.country,
@@ -21,18 +40,110 @@ const destinations = rawDestinations.map((d) => ({
 
 type Dest = (typeof destinations)[number];
 
+/* ═══════════════════════════════════════════════════════════════════
+   TRAVEL SERVICES DATA
+   ═══════════════════════════════════════════════════════════════════ */
+const travelServices = [
+  {
+    icon: Plane,
+    label: "Charter & Commercial",
+    title: "Flight Support",
+    description: "Group flight bookings, private charters, and seamless arrival coordination.",
+    action: "Request Quote",
+    colSpan: 1,
+    rowSpan: 1,
+    variant: "standard" as const,
+    href: "/travel-support/flights",
+  },
+  {
+    icon: FileText,
+    label: "Compliance",
+    title: "Visa & Documentation",
+    description: "Hassle-free visa processing and travel document checks for international groups.",
+    action: "Check Req",
+    colSpan: 1,
+    rowSpan: 1,
+    variant: "compact" as const,
+    href: "/travel-support/visa",
+  },
+  {
+    icon: Crown,
+    label: "Fast-Track",
+    title: "Airport VIP Services",
+    description: "Meet and greet, priority immigration, and exclusive lounge access globally.",
+    action: "Learn More",
+    colSpan: 2,      // wide card
+    rowSpan: 1,
+    variant: "hero" as const,
+    href: "/travel-support/airport-vip",
+  },
+  {
+    icon: Car,
+    label: "Logistics",
+    title: "Ground Transfers",
+    description: "Executive sedans, group coaches, and seamless hotel-to-venue logistics.",
+    action: "Book Now",
+    colSpan: 1,
+    rowSpan: 1,
+    variant: "standard" as const,
+    href: "/travel-support/transfers",
+  },
+  {
+    icon: Building,
+    label: "Accommodation",
+    title: "Premium Stays",
+    description: "Handpicked hotels and resorts for comfort, convenience, and unforgettable stays.",
+    action: "View Stays",
+    colSpan: 1,
+    rowSpan: 1,
+    variant: "standard" as const,
+    href: "/travel-support/stays",
+  },
+  {
+    icon: Headphones,
+    label: "Assistance",
+    title: "24/7 Travel Support",
+    description: "Round-the-clock assistance for you and your group, anytime, anywhere.",
+    action: "Get Support",
+    colSpan: 2,      // wide card
+    rowSpan: 1,
+    variant: "hero" as const,
+    href: "/travel-support/assistance",
+  },
+  {
+    icon: CalendarDays,
+    label: "Experiences",
+    title: "Events & Experiences",
+    description: "Curated activities, gala dinners, and local experiences tailored for your group.",
+    action: "Explore",
+    colSpan: 1,
+    rowSpan: 1,
+    variant: "compact" as const,
+    href: "/destinations",
+  },
+];
+
+const trustItems = [
+  { icon: ShieldCheck, title: "Secure & Reliable", desc: "Your safety and privacy are our top priority." },
+  { icon: Users, title: "Group Travel Experts", desc: "Specialized in managing groups of all sizes." },
+  { icon: BadgeCheck, title: "Best Price Guarantee", desc: "Premium experiences at the best possible value." },
+  { icon: Globe, title: "Global Reach", desc: "Destinations and partners across the world." },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   MAIN SECTION
+   ═══════════════════════════════════════════════════════════════════ */
 export function PremiumDestinationsSection() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  // We initialize heroInstanceId with a default so the first render has a valid layoutId
-  const [heroInstanceId, setHeroInstanceId] = useState<string>(`${destinations[0].id}-0`);
 
-  // Marquee translation state
-  const x = useMotionValue(0);
+  const [activeDest, setActiveDest] = useState<Dest>(destinations[0]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Marquee settings
+  const speed = 35;
+  const xRef = useRef(0);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -41,74 +152,31 @@ export function PremiumDestinationsSection() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Continuous marquee animation
   useAnimationFrame((time, delta) => {
-    if (isAnimating || isMobile) return; // Pause during FLIP or if native scroll on mobile
+    if (isMobile) return;
     if (!contentRef.current) return;
-    
-    // speed: ~45px per second
-    const moveBy = (45 * delta) / 1000;
-    let newX = x.get() - moveBy;
-    
+
+    const moveBy = (speed * delta) / 1000;
+    xRef.current -= moveBy;
+
     const singleSetWidth = contentRef.current.scrollWidth / 2;
-    
-    // Wrap seamlessly
-    if (singleSetWidth > 0 && newX <= -singleSetWidth) {
-      newX += singleSetWidth;
+
+    if (singleSetWidth > 0 && Math.abs(xRef.current) >= singleSetWidth) {
+      xRef.current += singleSetWidth;
     }
-    
-    x.set(newX);
+
+    contentRef.current.style.transform = `translateX(${xRef.current}px)`;
+
+    const logicalCardWidth = 308;
+    const triggerOffset = Math.abs(xRef.current) + 120;
+    const activeIdx = Math.floor((triggerOffset % singleSetWidth) / logicalCardWidth);
+    const safeIdx = Math.max(0, Math.min(destinations.length - 1, activeIdx));
+
+    if (destinations[safeIdx].id !== activeDest.id) {
+      setActiveDest(destinations[safeIdx]);
+      setActiveIndex(safeIdx);
+    }
   });
-
-  const handleCardActivate = useCallback(
-    (id: string, instanceId: string) => {
-      if (isAnimating) return;
-      setIsAnimating(true);
-      setHeroInstanceId(instanceId);
-      
-      const index = destinations.findIndex((d) => d.id === id);
-      if (index !== -1 && index !== activeIndex) {
-        setActiveIndex(index);
-      } else {
-        // If they click the already active card (edge case), just unpause
-        setIsAnimating(false);
-      }
-    },
-    [activeIndex, isAnimating]
-  );
-
-  // Helper to find which instance of a destination is currently most visible on screen
-  const getVisibleInstanceId = useCallback((destId: string) => {
-    const el0 = document.getElementById(`card-${destId}-0`);
-    const el1 = document.getElementById(`card-${destId}-1`);
-    
-    if (el0 && el1) {
-      const rect0 = el0.getBoundingClientRect();
-      const rect1 = el1.getBoundingClientRect();
-      
-      // If one is clearly within the viewport, pick it
-      if (rect0.right > 0 && rect0.left < window.innerWidth) return `${destId}-0`;
-      if (rect1.right > 0 && rect1.left < window.innerWidth) return `${destId}-1`;
-      
-      // Fallback
-      return rect0.left > rect1.left ? `${destId}-0` : `${destId}-1`;
-    }
-    return `${destId}-0`;
-  }, []);
-
-  const handleNext = () => {
-    if (isAnimating) return;
-    const nextIndex = (activeIndex + 1) % destinations.length;
-    const nextDest = destinations[nextIndex];
-    handleCardActivate(nextDest.id, getVisibleInstanceId(nextDest.id));
-  };
-
-  const handlePrev = () => {
-    if (isAnimating) return;
-    const prevIndex = (activeIndex - 1 + destinations.length) % destinations.length;
-    const prevDest = destinations[prevIndex];
-    handleCardActivate(prevDest.id, getVisibleInstanceId(prevDest.id));
-  };
 
   const handleExplore = useCallback(
     (dest: Dest) => {
@@ -117,28 +185,19 @@ export function PremiumDestinationsSection() {
     [router]
   );
 
-  const handleAnimationComplete = () => {
-    // Slight delay before resuming marquee ensures settling feels natural
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 400);
-  };
+  /* ─── Manual Prev / Next ─── */
+  const goTo = useCallback(
+    (idx: number) => {
+      const safeIdx = ((idx % destinations.length) + destinations.length) % destinations.length;
+      setActiveDest(destinations[safeIdx]);
+      setActiveIndex(safeIdx);
+    },
+    []
+  );
+  const handlePrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+  const handleNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
 
-  // Derive the carousel order
-  const orderedDestinations = [
-    destinations[activeIndex],
-    ...destinations.slice(activeIndex + 1),
-    ...destinations.slice(0, activeIndex),
-  ];
-
-  const activeDest = orderedDestinations[0];
-  const carouselDests = orderedDestinations.slice(1);
-  
-  // Duplicate for infinite marquee
-  const allCarouselCards = [
-    ...carouselDests.map(d => ({ ...d, instanceId: `${d.id}-0` })),
-    ...carouselDests.map(d => ({ ...d, instanceId: `${d.id}-1` }))
-  ];
+  const allCarouselCards = [...destinations, ...destinations];
 
   const formatTitle = (title: string) => {
     const words = title.split(" ");
@@ -155,233 +214,344 @@ export function PremiumDestinationsSection() {
   };
 
   return (
-    <MotionConfig transition={{ duration: 0.85, ease: [0.32, 0.72, 0, 1] }}>
-      <section className="relative w-full md:h-[80vh] min-h-[600px] flex flex-col md:flex-row bg-[#050505] overflow-hidden text-white border-t border-white/10">
-        
-        {/* ─── LEFT HERO ─── */}
-        <div className="relative w-full md:w-[45%] h-[60vh] md:h-full z-10 flex flex-col justify-end p-8 md:p-16 lg:p-20 overflow-hidden shrink-0">
-          
+    <>
+      <section className="relative w-full bg-[#030712] overflow-hidden text-white">
+
+        <AnimatePresence mode="popLayout">
           <motion.div
-            key={`hero-bg-${activeDest.id}`}
-            layoutId={`card-${heroInstanceId}`}
-            className="absolute inset-0 -z-10 origin-center"
-            style={{ borderRadius: 0 }}
-            initial={{ y: 60 }}
-            animate={{ y: 0 }}
-            onAnimationComplete={handleAnimationComplete}
+            key={activeDest.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0 z-0"
           >
-            <motion.img
-              layoutId={`image-${heroInstanceId}`}
+            <img
               src={activeDest.heroImage}
               alt={activeDest.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 md:bg-gradient-to-r md:from-black/90 md:via-black/50 md:to-transparent" />
           </motion.div>
+        </AnimatePresence>
 
-          {/* TEXT OVERLAY */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`hero-text-${activeDest.id}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="relative z-10 flex flex-col items-start"
-            >
-              <span className="flex items-center gap-3 text-xs md:text-sm font-mono tracking-[0.2em] text-[#eab308] uppercase mb-4">
-                <span className="w-8 h-px bg-[#eab308]" />
-                {activeDest.country}
-              </span>
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#030712]/90 via-[#030712]/50 to-transparent" />
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#030712]/80 via-transparent to-[#030712]/30" />
 
-              <h2 className="text-5xl md:text-6xl lg:text-7xl xl:text-[84px] font-display uppercase leading-[0.85] tracking-tight mb-6">
-                {formatTitle(activeDest.title)}
-              </h2>
+        <div className="absolute top-0 left-1/4 w-[50%] h-[400px] bg-blue-500/8 blur-[120px] rounded-full mix-blend-screen z-0 pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 w-[30%] h-[300px] bg-[#eab308]/5 blur-[120px] rounded-full mix-blend-screen z-0 pointer-events-none" />
 
-              <p className="text-white/70 max-w-sm mb-10 text-sm md:text-base leading-relaxed line-clamp-3">
-                {activeDest.description}
-              </p>
+        <div className="relative z-10 w-full flex flex-col md:flex-row pb-40 md:pb-56 min-h-[800px] md:min-h-[90vh]">
 
-              <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  className="w-12 h-12 rounded-full bg-[#eab308] flex items-center justify-center text-black hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(234,179,8,0.3)]"
-                  aria-label="Save destination"
-                >
-                  <Bookmark className="w-5 h-5 fill-current" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleExplore(activeDest)}
-                  className="h-12 px-8 rounded-full border border-white/20 text-xs font-mono uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300"
-                >
-                  Discover Location
-                </button>
+          <div className="relative w-full md:w-[42%] h-[50vh] md:h-full flex flex-col justify-center p-8 md:p-16 lg:pl-20 shrink-0 mt-10 md:mt-0">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`text-${activeDest.id}`}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <span className="flex items-center gap-3 text-xs font-mono tracking-[0.2em] text-[#eab308] uppercase mb-5 drop-shadow-md">
+                  <span className="w-8 h-px bg-[#eab308]" />
+                  {activeDest.country}
+                </span>
+
+                <h2 className="text-6xl md:text-7xl lg:text-[84px] xl:text-[96px] font-display uppercase leading-[0.85] tracking-tight mb-8 drop-shadow-2xl">
+                  {formatTitle(activeDest.title)}
+                </h2>
+
+                <p className="text-white/80 max-w-sm mb-12 text-sm md:text-base leading-relaxed line-clamp-4 drop-shadow-lg">
+                  {activeDest.description}
+                </p>
+
+                <div className="flex items-center gap-5">
+                  <button
+                    type="button"
+                    className="w-14 h-14 rounded-full bg-[#eab308] flex items-center justify-center text-black hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(234,179,8,0.3)]"
+                    aria-label="Save destination"
+                  >
+                    <Bookmark className="w-6 h-6 fill-current" />
+                  </button>
+                  <Link
+                    href={`/destinations/${activeDest.id}`}
+                    className="flex items-center h-14 px-8 rounded-full border border-white/20 text-xs font-mono uppercase tracking-widest hover:bg-white hover:text-black hover:border-white transition-all duration-300 backdrop-blur-sm bg-white/5"
+                  >
+                    Explore Destinations
+                    <ArrowRight className="inline-block w-4 h-4 ml-3" />
+                  </Link>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex items-center gap-4 mt-14">
+              <button
+                onClick={handlePrev}
+                className="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-black hover:border-white hover:scale-110 active:scale-95 transition-all duration-300"
+                aria-label="Previous destination"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-display text-4xl text-white tabular-nums">
+                  {String(activeIndex + 1).padStart(2, "0")}
+                </span>
+                <span className="text-white/30 text-base font-mono mx-1">/</span>
+                <span className="text-white/30 text-base font-mono">
+                  {String(destinations.length).padStart(2, "0")}
+                </span>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
-        {/* ─── RIGHT CAROUSEL ─── */}
-        <div className="relative w-full md:w-[55%] h-[50vh] md:h-full bg-[#0a0a0a] flex items-center overflow-hidden md:pl-10">
-          
-          {/* Fade masks */}
-          <div className="hidden md:block absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 pointer-events-none" />
-          <div className="hidden md:block absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20 pointer-events-none" />
-
-          {/* Carousel */}
-          <div className="flex items-center w-full h-full py-10 px-6 md:px-0 overflow-visible">
-            <motion.div
-              ref={contentRef}
-              style={{ x: isMobile ? 0 : x }}
-              className={`flex gap-4 md:gap-6 w-max ${isMobile ? "overflow-x-auto snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : ""}`}
-            >
-              {allCarouselCards.map((dest, i) => (
-                <DestinationCard
-                  key={`carousel-card-${dest.instanceId}`}
-                  dest={dest}
-                  instanceId={dest.instanceId}
-                  isMobile={isMobile}
-                  onActivate={handleCardActivate}
-                  onExplore={handleExplore}
-                />
-              ))}
-            </motion.div>
+              <button
+                onClick={handleNext}
+                className="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-black hover:border-white hover:scale-110 active:scale-95 transition-all duration-300"
+                aria-label="Next destination"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
-          {/* Navigation */}
-          <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 z-30 flex items-center gap-3">
-            <button
-              onClick={handlePrev}
-              className="w-11 h-11 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-black hover:border-white hover:scale-110 active:scale-95 transition-all duration-300"
-              aria-label="Previous destination"
-            >
-              <ArrowLeft className="w-4 h-4 transition-transform duration-200 hover:-translate-x-0.5" />
-            </button>
-            <button
-              onClick={handleNext}
-              className="w-11 h-11 rounded-full border border-white/20 bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-black hover:border-white hover:scale-110 active:scale-95 transition-all duration-300"
-              aria-label="Next destination"
-            >
-              <ArrowRight className="w-4 h-4 transition-transform duration-200 hover:translate-x-0.5" />
-            </button>
-          </div>
+          <div className="relative w-full md:w-[58%] h-[50vh] md:h-full flex items-center overflow-hidden">
 
-          {/* Counter */}
-          <div className="hidden md:flex absolute bottom-10 right-32 items-baseline gap-1 z-30">
-            <span className="font-display text-5xl text-white tabular-nums transition-all duration-500">
-              {String(activeIndex + 1).padStart(2, "0")}
-            </span>
-            <span className="text-white/30 text-lg font-mono mx-1">/</span>
-            <span className="text-white/30 text-lg font-mono">
-              {String(destinations.length).padStart(2, "0")}
-            </span>
-            <div className="absolute -bottom-3 left-0 right-0 h-px bg-white/10 overflow-hidden">
+            <div className="hidden md:block absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#030712]/60 to-transparent z-20 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#030712]/80 to-transparent z-20 pointer-events-none" />
+
+            <div className="flex items-center w-full h-full py-20 px-6 md:px-0 overflow-visible">
               <div
-                className="h-full bg-[#eab308] transition-all duration-700 ease-out"
-                style={{ width: `${((activeIndex + 1) / destinations.length) * 100}%` }}
-              />
+                ref={contentRef}
+                className={`flex items-center gap-8 w-max ${isMobile ? "overflow-x-auto snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : ""}`}
+              >
+                {allCarouselCards.map((dest, i) => {
+                  const isActive = activeDest.id === dest.id;
+                  return (
+                    <DestinationCard
+                      key={`${dest.id}-${i}`}
+                      dest={dest}
+                      isActive={isActive}
+                      isMobile={isMobile}
+                      onExplore={handleExplore}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
+
+        <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
+          <div className="absolute bottom-48 left-1/2 -translate-x-1/2 w-[70%] h-[200px] bg-blue-900/15 blur-[140px] rounded-full" />
+          <div className="absolute bottom-56 left-1/3 w-[40%] h-[120px] bg-[#eab308]/5 blur-[100px] rounded-full" />
+          <div className="h-64 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent" />
+        </div>
       </section>
-    </MotionConfig>
+
+      <section className="relative w-full bg-[#050505] overflow-hidden text-white py-24 lg:py-32">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[200px] bg-blue-900/10 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
+            <div className="max-w-xl">
+              <span className="flex items-center gap-3 text-xs font-mono tracking-[0.2em] text-[#eab308] uppercase mb-5">
+                <span className="w-8 h-px bg-[#eab308]" />
+                Premium Travel Services
+              </span>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-display text-white leading-[0.95] mb-6">
+                Everything You Need,
+                <br />
+                We've Got You Covered
+              </h2>
+              <p className="text-white/50 text-base leading-relaxed max-w-md">
+                End-to-end travel solutions designed for groups, events, and unforgettable journeys.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-auto">
+            {travelServices.map((service) => {
+              const Icon = service.icon;
+              const isHero = service.variant === "hero";
+              const isCompact = service.variant === "compact";
+
+              return (
+                <Link key={service.title} href={service.href} className="block group">
+                  <article
+                    className={`
+                      relative rounded-2xl border border-white/8 bg-white/[0.03] backdrop-blur-sm
+                      transition-all duration-500 h-full
+                      group-hover:border-[#eab308]/30 group-hover:bg-white/[0.06] group-hover:-translate-y-1
+                      group-hover:shadow-[0_8px_30px_rgba(234,179,8,0.06)]
+                      ${isHero ? "sm:col-span-2 p-8 min-h-[220px]" : isCompact ? "p-6 min-h-[180px]" : "p-6 min-h-[200px]"}
+                    `}
+                  >
+                    {isHero ? (
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-6 h-full">
+                        <div className="shrink-0">
+                          <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/8 flex items-center justify-center group-hover:bg-[#eab308]/10 group-hover:border-[#eab308]/30 group-hover:scale-110 transition-all duration-500">
+                            <Icon className="w-6 h-6 text-[#eab308]" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-between flex-1 h-full">
+                          <div>
+                            <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-[#eab308]/70 mb-2 block">
+                              {service.label}
+                            </span>
+                            <h3 className="font-display text-xl text-white mb-3 group-hover:text-[#eab308] transition-colors duration-300">
+                              {service.title}
+                            </h3>
+                            <p className="text-white/45 text-sm leading-relaxed max-w-sm">
+                              {service.description}
+                            </p>
+                          </div>
+                          <span className="mt-5 inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/30 group-hover:text-[#eab308] transition-colors duration-300 self-start">
+                            {service.action}
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col justify-between h-full">
+                        <div>
+                          <div className={`${isCompact ? "w-10 h-10 rounded-lg" : "w-12 h-12 rounded-xl"} bg-white/5 border border-white/8 flex items-center justify-center mb-5 group-hover:bg-[#eab308]/10 group-hover:border-[#eab308]/30 group-hover:scale-110 transition-all duration-500`}>
+                            <Icon className={`${isCompact ? "w-4 h-4" : "w-5 h-5"} text-[#eab308]`} />
+                          </div>
+                          <h3 className={`font-display text-white mb-2 group-hover:text-[#eab308] transition-colors duration-300 ${isCompact ? "text-base" : "text-lg"}`}>
+                            {service.title}
+                          </h3>
+                          <p className={`text-white/45 leading-relaxed ${isCompact ? "text-xs" : "text-sm"}`}>
+                            {service.description}
+                          </p>
+                        </div>
+                        <span className="mt-5 inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/30 group-hover:text-[#eab308] transition-colors duration-300">
+                          {service.action}
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+                    )}
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* ─── TRUST STRIP ─── */}
+          <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {trustItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="flex items-center gap-5 rounded-2xl border border-white/8 bg-white/[0.02] backdrop-blur-sm px-6 py-5 transition-all duration-500 hover:border-white/15 hover:bg-white/[0.04]"
+                >
+                  <div className="w-12 h-12 rounded-full bg-[#eab308]/10 border border-[#eab308]/20 flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-[#eab308]" />
+                  </div>
+                  <div>
+                    <h4 className="font-display text-base text-white">{item.title}</h4>
+                    <p className="text-white/40 text-sm">{item.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   DESTINATION CARD — for the Right Carousel
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   DESTINATION CARD
+   ═══════════════════════════════════════════════════════════════════ */
 function DestinationCard({
   dest,
-  instanceId,
+  isActive,
   isMobile,
-  onActivate,
   onExplore,
 }: {
   dest: Dest;
-  instanceId: string;
+  isActive: boolean;
   isMobile: boolean;
-  onActivate: (destId: string, instanceId: string) => void;
   onExplore: (dest: Dest) => void;
 }) {
   return (
-    <motion.article
-      id={`card-${instanceId}`}
-      layoutId={`card-${instanceId}`}
-      initial={{ y: -60, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      style={{ borderRadius: 24 }}
+    <article
       className={`
-        relative overflow-hidden bg-[#111] shrink-0 cursor-pointer group
-        ${isMobile ? "w-[280px] h-[380px] snap-center" : "w-[300px] lg:w-[320px] h-[450px] lg:h-[500px]"}
-        hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#eab308]/10
-        transition-all duration-500 ease-out z-10
+        relative overflow-hidden shrink-0 group rounded-[24px]
+        transition-all duration-700 ease-[0.25,0.1,0.25,1] border
+        ${isMobile
+          ? "w-[280px] h-[400px] snap-center scale-100 opacity-100 border-white/15 z-10 bg-black/20 backdrop-blur-sm"
+          : (isActive
+             ? "w-[260px] h-[380px] scale-[1.35] z-50 border-[#eab308]/60 shadow-[0_0_40px_rgba(234,179,8,0.2)] opacity-100 bg-black/10 backdrop-blur-sm"
+             : "w-[260px] h-[380px] scale-100 z-10 border-white/10 opacity-60 hover:opacity-100 hover:border-white/25 bg-black/10 backdrop-blur-sm")
+        }
       `}
-      onClick={() => onActivate(dest.id, instanceId)}
-      role="button"
-      tabIndex={0}
-      aria-label={`${dest.title}, ${dest.country}`}
     >
-      {/* Image with subtle zoom on hover */}
-      <motion.div className="absolute inset-0 overflow-hidden" style={{ borderRadius: 24 }}>
-        <motion.img
-          layoutId={`image-${instanceId}`}
+      <div className="absolute inset-0 overflow-hidden rounded-[24px]">
+        <img
           src={dest.image}
           alt={dest.title}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.05] group-hover:brightness-110"
+          className="absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-[0.25,0.1,0.25,1] group-hover:scale-110"
           loading="lazy"
         />
-      </motion.div>
+      </div>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/5 opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Glass gradient — lighter for more transparency */}
+      <div className={`absolute inset-0 transition-opacity duration-700 ${isActive ? 'opacity-90' : 'opacity-70 group-hover:opacity-90'} bg-gradient-to-t from-black/80 via-black/20 to-transparent`} />
 
       {/* Category badge */}
-      <div className="absolute top-5 left-5 opacity-80 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-500">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[9px] font-mono uppercase tracking-widest text-white/80">
+      <div className="absolute top-5 left-5">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[8px] font-mono uppercase tracking-widest text-white/90">
           {dest.category}
         </span>
       </div>
 
       {/* Rating badge */}
-      <div className="absolute top-5 right-5 opacity-80 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-500 delay-75">
-        <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#eab308]/20 backdrop-blur-md border border-[#eab308]/30 text-[10px] font-mono text-[#eab308]">
-          ★ {dest.rating}
-        </span>
-      </div>
+      {dest.rating && (
+        <div className="absolute top-5 right-5">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#eab308]/20 backdrop-blur-md border border-[#eab308]/30 text-[9px] font-mono text-[#eab308]">
+            ★ {dest.rating}
+          </span>
+        </div>
+      )}
 
       {/* Bottom content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end">
-        <div className="flex items-center gap-1.5 mb-2 opacity-70 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-400 ease-out">
+      <div className="absolute bottom-0 left-0 right-0 flex flex-col justify-end p-5">
+        <div className="flex items-center gap-2 mb-1.5">
           <MapPin className="w-3 h-3 text-[#eab308]" />
-          <span className="text-[10px] font-mono tracking-widest text-white/60 uppercase">
+          <span className="text-[9px] font-mono tracking-widest text-white/80 uppercase">
             {dest.country}
           </span>
         </div>
 
-        <h3 className="font-display text-white leading-[1.05] uppercase text-2xl group-hover:-translate-y-1 transition-all duration-500 ease-out">
+        <h3 className={`font-display text-white leading-[1.05] uppercase transition-all duration-700 ${isActive ? 'text-2xl mb-1' : 'text-xl'}`}>
           {dest.title}
         </h3>
 
-        <div className="h-px bg-gradient-to-r from-[#eab308] to-transparent mt-3 mb-3 w-0 group-hover:w-full opacity-0 group-hover:opacity-100 transition-all duration-600 ease-out origin-left" />
-
-        <p className="text-xs leading-relaxed text-white/60 overflow-hidden max-h-0 opacity-0 group-hover:max-h-24 group-hover:opacity-100 group-hover:mt-2 transition-all duration-500 ease-out">
-          {dest.description}
-        </p>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onExplore(dest);
-          }}
-          className="mt-4 inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#eab308] opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 ease-out"
-        >
-          Explore destination
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        {/* ─── HOVER REVEAL ─── */}
+        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-[0.25,0.1,0.25,1]">
+          <div className="overflow-hidden">
+            <div className="pt-3">
+              <div className="h-px w-full bg-gradient-to-r from-[#eab308]/60 to-transparent mb-3" />
+              <p className="text-[11px] leading-relaxed text-white/60 line-clamp-3 mb-3">
+                {dest.description}
+              </p>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onExplore(dest);
+                }}
+                className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#eab308] hover:text-white transition-colors duration-300"
+                aria-label={`Explore ${dest.title}`}
+              >
+                Explore
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

@@ -7,11 +7,11 @@ import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 
 const navLinks = [
   { index: "01", label: "Home",     href: "/"             },
-  { index: "02", label: "Product",    href: "/works"        },
-  { index: "03", label: "Dashboard", href: "/services"     },
-  { index: "04", label: "Event Microsite",    href: "/about"        },
-  { index: "05", label: "Create an Event",  href: "/contact"      },
-  { index: "06", label: "Travel Support", href: "/support"      },
+  { index: "02", label: "Product",    href: "/product"        },
+  { index: "03", label: "Dashboard", href: "/dashboard"     },
+  { index: "04", label: "Event Microsite",    href: "/event-microsite"        },
+  { index: "05", label: "Create an Event",  href: "/create-event"      },
+  { index: "06", label: "Travel Support", href: "/travel-support"      },
   { index: "07", label: "Destination",  href: "/destinations" },
 ];
 

@@ -68,7 +68,7 @@ export function CtaSection() {
                     asChild
                     className="bg-[#eab308] hover:bg-white text-black px-8 h-14 text-sm font-mono uppercase tracking-widest rounded-full group transition-colors duration-300"
                   >
-                    <Link href="/contact">
+                    <Link href="/create-event">
                       Create your first event
                       <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                     </Link>
@@ -79,7 +79,7 @@ export function CtaSection() {
                     asChild
                     className="h-14 px-8 text-sm font-mono uppercase tracking-widest rounded-full border-white/20 hover:bg-white hover:text-black transition-colors duration-300"
                   >
-                    <Link href="/about">View Guest App</Link>
+                    <Link href="/event-microsite">View Guest App</Link>
                   </Button>
                 </div>
 

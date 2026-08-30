@@ -258,7 +258,7 @@ export function MicrositeGuestSection() {
               <a href="#guest-microsite" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-5 py-3 text-xs font-medium uppercase tracking-[0.14em]">
                 Preview guest experience <ArrowUpRight className="h-4 w-4" />
               </a>
-              <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#eca8d6] px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-black">
+              <Link href="/create-event" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#eca8d6] px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-black">
                 Create an event <ArrowUpRight className="h-4 w-4" />
               </Link>
             </div>

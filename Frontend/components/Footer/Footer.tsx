@@ -2,6 +2,7 @@
 
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 type FooterLink = {
   name: string;
@@ -11,27 +12,27 @@ type FooterLink = {
 
 const footerLinks: Record<string, FooterLink[]> = {
   Product: [
-    { name: "Platform features", href: "/works" },
-    { name: "How it works", href: "/services" },
-    { name: "Pricing", href: "/contact#pricing" },
-    { name: "Integrations", href: "/contact#integrations" },
+    { name: "Platform features", href: "/product" },
+    { name: "How it works", href: "/dashboard" },
+    { name: "Pricing", href: "/create-event#pricing" },
+    { name: "Integrations", href: "/create-event#integrations" },
   ],
   Solutions: [
     { name: "Corporate Offsites", href: "/destinations" },
     { name: "Destination Weddings", href: "/destinations" },
     { name: "MICE Events", href: "/destinations" },
-    { name: "Travel Agents", href: "/contact" },
+    { name: "Travel Agents", href: "/create-event" },
   ],
   Company: [
-    { name: "Event Microsite", href: "/about" },
-    { name: "Dashboard", href: "/services" },
-    { name: "Create an event", href: "/contact" },
-    { name: "Contact", href: "/contact" },
+    { name: "Event Microsite", href: "/event-microsite" },
+    { name: "Dashboard", href: "/dashboard" },
+    { name: "Create an event", href: "/create-event" },
+    { name: "Contact", href: "/create-event" },
   ],
   Legal: [
-    { name: "Privacy", href: "/contact#security" },
-    { name: "Terms", href: "/contact#security" },
-    { name: "Security", href: "/contact#security" },
+    { name: "Privacy", href: "/create-event#security" },
+    { name: "Terms", href: "/create-event#security" },
+    { name: "Security", href: "/create-event#security" },
   ],
 };
 
@@ -120,10 +121,10 @@ export function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-6 gap-12 lg:gap-8">
             {/* Brand Column */}
             <div className="col-span-2">
-              <a href="#" className="inline-flex items-center gap-2 mb-6">
+              <Link href="/" className="inline-flex items-center gap-2 mb-6">
                 <span className="text-2xl font-display text-white">EVENTSTAY</span>
                 <span className="text-xs text-white/40 font-mono">TM</span>
-              </a>
+              </Link>
 
               <p className="text-white/50 leading-relaxed mb-8 max-w-xs text-sm">
                 The premier group travel inventory and booking platform. Delegate complex coordination to our platform.
@@ -151,7 +152,7 @@ export function Footer() {
                 <ul className="space-y-4">
                   {links.map((link) => (
                     <li key={link.name}>
-                      <a
+                      <Link
                         href={link.href}
                         className="text-sm text-white/40 hover:text-white transition-colors inline-flex items-center gap-2"
                       >
@@ -161,7 +162,7 @@ export function Footer() {
                             {link.badge}
                           </span>
                         )}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

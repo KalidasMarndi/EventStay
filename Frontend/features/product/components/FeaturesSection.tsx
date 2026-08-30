@@ -242,7 +242,7 @@ export function FeaturesSection() {
             <span className="mb-6 inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-white/60"><span className="h-px w-10 bg-white/40" /> Product experience</span>
             <h2 className="font-display text-5xl leading-[0.92] tracking-tight md:text-7xl lg:text-[104px]">From venue atmosphere<br /><span className="text-white/60">to confirmed stays.</span></h2>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-white/70 md:text-lg">EventStay helps you reserve, share, track, and confirm the stay experience around every celebration.</p>
-            <Link href="/contact" className="mt-7 inline-flex items-center gap-3 border-b border-white/70 pb-2 text-xs font-medium uppercase tracking-[0.14em] transition-colors hover:border-[#eab308] hover:text-[#eab308]">Create an event <ArrowUpRight className="h-4 w-4" /></Link>
+            <Link href="/create-event" className="mt-7 inline-flex items-center gap-3 border-b border-white/70 pb-2 text-xs font-medium uppercase tracking-[0.14em] transition-colors hover:border-[#eab308] hover:text-[#eab308]">Create an event <ArrowUpRight className="h-4 w-4" /></Link>
           </div>
 
           <div className="mb-16 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -465,7 +465,7 @@ export function FeaturesSection() {
         <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <p className="font-display text-2xl md:text-3xl">Your event deserves one place for every stay.</p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#eab308] px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-black">Create an event <ArrowUpRight className="h-4 w-4" /></Link>
+            <Link href="/create-event" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#eab308] px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-black">Create an event <ArrowUpRight className="h-4 w-4" /></Link>
             <Link href="#guest-experience" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-white">View guest experience <ArrowUpRight className="h-4 w-4" /></Link>
           </div>
         </div>

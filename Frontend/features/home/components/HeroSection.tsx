@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 // ── Video URLs ─────────────────────────────────────────────────────────────
 const VIDEO_URLS = [
@@ -257,13 +258,13 @@ export function HeroSection() {
                 Every group trip deserves its own destination. Create private travel inventory, launch a branded event microsite, and give every guest a seamless way to book, connect, and arrive.
               </p>
 
-              <a
-                href="#contact"
+              <Link
+                href="/create-event"
                 className="hero-cta-btn w-fit border border-white text-white text-sm leading-5 tracking-[-0.14px] font-medium px-6 py-3 lowercase"
                 aria-label="Start a project"
               >
                 <span>create an event</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
