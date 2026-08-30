@@ -10,6 +10,11 @@ import {
   Users,
   Volume2,
   VolumeX,
+  Building,
+  ClipboardCheck,
+  Plane,
+  Map,
+  LifeBuoy,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -116,6 +121,51 @@ const micrositeSteps = [
   { id: "cover", label: "Cover" },
   { id: "stay", label: "Stay" },
   { id: "book", label: "Book your stay" },
+];
+
+const featureCards = [
+  {
+    icon: CalendarDays,
+    category: "Event Management",
+    title: "Centralized Events",
+    description: "Create and manage destination weddings, corporate offsites, and group stays from a single dashboard.",
+    detail: "Custom microsites & timelines",
+  },
+  {
+    icon: Building,
+    category: "Stays & Inventory",
+    title: "Room Allocations",
+    description: "Hold contracted rooms, define packages, and track live availability without touching a spreadsheet.",
+    detail: "Real-time room tracking",
+  },
+  {
+    icon: ClipboardCheck,
+    category: "Guest Bookings",
+    title: "Seamless Journey",
+    description: "Guests view your branded event page, select their stay, and receive immediate confirmations.",
+    detail: "Self-serve booking flow",
+  },
+  {
+    icon: CreditCard,
+    category: "Payments",
+    title: "Direct Collections",
+    description: "Securely process room payments and deposits from guests right when they book their stay.",
+    detail: "Integrated processing",
+  },
+  {
+    icon: Map,
+    category: "Destinations",
+    title: "Location Guides",
+    description: "Guide your guests with rich venue details, local recommendations, and travel itineraries.",
+    detail: "Venue & map integration",
+  },
+  {
+    icon: LifeBuoy,
+    category: "Travel Support",
+    title: "Guest Assistance",
+    description: "Provide dedicated support for guest inquiries, special requests, and seamless arrival coordination.",
+    detail: "Concierge capabilities",
+  }
 ];
 
 function ProductPreview({ type }: { type: string }) {
@@ -293,25 +343,52 @@ export function FeaturesSection() {
             })}
           </div>
 
-          <div className="mt-16 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-[24px] border border-white/15 bg-[#0a0a0a]/92 p-7 md:p-10">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#eab308]">Organizer</p>
-              <h3 className="mt-4 font-display text-4xl">Creates inventory, sets rules, sees live bookings.</h3>
-              <ul className="mt-6 space-y-3 text-sm text-white/65">
-                <li>Hold contracted rooms and packages against a deadline.</li>
-                <li>Publish one microsite instead of a shared spreadsheet.</li>
-                <li>Watch payments and remaining inventory update in the dashboard.</li>
-              </ul>
-            </article>
-            <article className="rounded-[24px] border border-white/15 bg-[#0a0a0a]/92 p-7 md:p-10">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#eab308]">Guest</p>
-              <h3 className="mt-4 font-display text-4xl">Views microsite, picks a package, pays, gets confirmation.</h3>
-              <ul className="mt-6 space-y-3 text-sm text-white/65">
-                <li>Open a branded page made for this event only.</li>
-                <li>Choose a room or villa that still has inventory.</li>
-                <li>Pay and receive confirmation without chasing the host.</li>
-              </ul>
-            </article>
+          <div className="mt-24 mb-12">
+            <span className="mb-6 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+              <span className="h-px w-6 bg-white/30" /> Core Capabilities
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight">Built for every stage of your event.</h2>
+            <p className="mt-6 text-white/60 text-base md:text-lg max-w-2xl leading-relaxed">From initial room blocks to the final guest arrival, EventStay provides the tools to manage group travel effortlessly.</p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featureCards.map((card, idx) => {
+              const Icon = card.icon;
+              return (
+                <article
+                  key={idx}
+                  className="group relative flex flex-col justify-between rounded-[24px] border border-white/10 bg-[#0a0a0a]/80 p-8 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-2 hover:border-white/30 hover:bg-[#111]/95 hover:shadow-2xl"
+                >
+                  <div className="absolute inset-0 overflow-hidden rounded-[24px] opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <div className="absolute -inset-[100%] bg-gradient-to-br from-white/[0.04] to-transparent" />
+                  </div>
+
+                  <div className="relative z-10">
+                    <div className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/60 transition-colors duration-500 group-hover:border-[#eab308]/40 group-hover:bg-[#eab308]/10 group-hover:text-[#eab308]">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    
+                    <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/45 transition-colors duration-500 group-hover:text-[#eab308]/80">
+                      {card.category}
+                    </p>
+                    
+                    <h3 className="mb-5 font-display text-3xl tracking-tight text-white transition-colors duration-500 group-hover:text-white">
+                      {card.title}
+                    </h3>
+                    
+                    <p className="text-sm leading-relaxed text-white/50 transition-colors duration-500 group-hover:text-white/70">
+                      {card.description}
+                    </p>
+                  </div>
+                  
+                  <div className="relative z-10 mt-10 border-t border-white/10 pt-5 transition-colors duration-500 group-hover:border-white/20">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/30 transition-colors duration-500 group-hover:text-white/60">
+                      → {card.detail}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
 
           <div id="guest-experience" className="mt-16 grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
