@@ -4,32 +4,39 @@ import { useRef } from "react";
 import { ArrowRight, Sparkles, Building2, Palmtree, GlassWater, Users } from "lucide-react";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 
+import Link from "next/link";
+
 const eventTypes = [
   {
+    id: "wedding-events",
     title: "Wedding Events",
     description: "Curate a magical destination wedding experience for you and your guests.",
     icon: <Sparkles className="w-6 h-6 text-[#eab308]" />,
     image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop",
   },
   {
+    id: "corporate-events",
     title: "Corporate Events",
     description: "Streamline offsites, retreats, and global conferences with premium tools.",
     icon: <Building2 className="w-6 h-6 text-[#eab308]" />,
     image: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=800&auto=format&fit=crop",
   },
   {
+    id: "group-adventures",
     title: "Group Adventures",
     description: "Plan epic multi-destination trips and adventurous getaways effortlessly.",
     icon: <Palmtree className="w-6 h-6 text-[#eab308]" />,
     image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=800&auto=format&fit=crop",
   },
   {
+    id: "luxury-experiences",
     title: "Luxury Experiences",
     description: "Private villas, exclusive resorts, and VIP concierge services for elite groups.",
     icon: <GlassWater className="w-6 h-6 text-[#eab308]" />,
     image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop",
   },
   {
+    id: "family-reunions",
     title: "Family Reunions",
     description: "Bring the whole family together with spacious accommodations and shared activities.",
     icon: <Users className="w-6 h-6 text-[#eab308]" />,
@@ -68,10 +75,10 @@ export function CreateEventHero() {
             <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-2xl mx-auto mb-10">
               Whether you're organizing a 300-person destination wedding or an intimate executive retreat, EventStay provides the tools, inventory, and insights to bring your vision to life.
             </p>
-            <button className="inline-flex items-center gap-3 h-14 px-10 rounded-full bg-[#eab308] text-sm font-mono uppercase tracking-widest text-black hover:bg-white transition-all duration-300 hover:scale-105">
+            <Link href="/create-event/wizard" className="inline-flex items-center gap-3 h-14 px-10 rounded-full bg-[#eab308] text-sm font-mono uppercase tracking-widest text-black hover:bg-white transition-all duration-300 hover:scale-105">
               Start Planning Now
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </AnimatedSection>
 
@@ -102,9 +109,9 @@ export function CreateEventHero() {
                     {type.description}
                   </p>
                   
-                  <div className="mt-6 flex items-center text-xs font-mono uppercase tracking-widest text-[#eab308] opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                  <Link href={`/create-event/wizard?type=${type.id}`} className="mt-6 flex items-center text-xs font-mono uppercase tracking-widest text-[#eab308] opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                     Explore Setup <ArrowRight className="w-3.5 h-3.5 ml-2" />
-                  </div>
+                  </Link>
                 </div>
               </div>
             ))}

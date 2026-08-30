@@ -1,0 +1,84 @@
+--- features/create-event/wizard/steps/DatesStep.tsx
++++ features/create-event/wizard/steps/DatesStep.tsx
+@@ -107,7 +107,12 @@
+   );
+ }
+ 
+-function DatePicker({ label, date, onSelect, icon }: any) {
++function DatePicker({ label, date, onSelect, icon }: {
++  label: string;
++  date: Date | null;
++  onSelect: (d: Date | null) => void;
++  icon?: React.ReactNode;
++}) {
+   return (
+     <div className="flex flex-col gap-2">
+       <label className="text-xs font-mono text-white/70 uppercase tracking-wider">{label}</label>
+@@ -128,7 +133,7 @@
+             mode="single"
+             selected={date || undefined}
+             onSelect={(day) => onSelect(day || null)}
+-            initialFocus
+           />
+         </PopoverContent>
+       </Popover>
+--- features/create-event/wizard/steps/GuestsStep.tsx
++++ features/create-event/wizard/steps/GuestsStep.tsx
+@@ -104,7 +104,13 @@
+   );
+ }
+ 
+-function Counter({ icon, label, subtext, value, onChange }: any) {
++function Counter({ icon, label, subtext, value, onChange }: {
++  icon: React.ReactNode;
++  label: string;
++  subtext?: string;
++  value: number;
++  onChange: (v: number) => void;
++}) {
+   return (
+     <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/5 hover:border-white/10 transition-colors">
+       <div className="flex items-center gap-4">
+@@ -137,7 +143,11 @@
+   );
+ }
+ 
+-function RoomToggle({ label, selected, onClick }: any) {
++function RoomToggle({ label, selected, onClick }: {
++  label: string;
++  selected: boolean;
++  onClick: () => void;
++}) {
+   return (
+     <button
+       onClick={onClick}
+--- features/create-event/wizard/steps/ServicesStep.tsx
++++ features/create-event/wizard/steps/ServicesStep.tsx
+@@ -4,14 +4,14 @@
+ import { WizardShell } from "../components/WizardShell";
+ import { useState } from "react";
+ import { cn } from "@/lib/utils";
+-import { Check, Plus, Crown, FileText, Car, Hotel, Headphones, CalendarStar, Plane } from "lucide-react";
++import { Check, Plus, Crown, FileText, Car, Hotel, Headphones, CalendarDays, Plane } from "lucide-react";
+ 
+ const SERVICES = [
+   { id: "airport-vip", title: "Airport VIP Services", desc: "Fast-track, lounge access & tarmac transfers", icon: Crown },
+   { id: "visa", title: "Visa & Documentation", desc: "Dedicated concierge for global group visas", icon: FileText },
+   { id: "transfers", title: "Ground Transfers", desc: "Fleet of luxury SUVs and executive coaches", icon: Car },
+   { id: "stays", title: "Premium Stays", desc: "Exclusive buyouts and presidential suites", icon: Hotel },
+   { id: "support", title: "24/7 Travel Support", desc: "Dedicated on-call agent during your event", icon: Headphones },
+-  { id: "experiences", title: "Events & Experiences", desc: "Curated local activities and dining", icon: CalendarStar },
++  { id: "experiences", title: "Events & Experiences", desc: "Curated local activities and dining", icon: CalendarDays },
+   { id: "flights", title: "Flight Coordination", desc: "Group booking and private charter management", icon: Plane },
+ ];
+--- features/create-event/wizard/steps/StayStep.tsx
++++ features/create-event/wizard/steps/StayStep.tsx
+@@ -4,7 +4,7 @@
+ import { useState } from "react";
+ import { cn } from "@/lib/utils";
+ import Image from "next/image";
+-import { Star, MapPin, Users, Coffee, Wifi, Dumbbell, Wine } from "lucide-react";
++import { Star, MapPin, Users, Coffee, Wifi, Dumbbell, Wine, Check } from "lucide-react";
+ 
+ // Development Mock Data for Stays
+ const MOCK_STAYS = [

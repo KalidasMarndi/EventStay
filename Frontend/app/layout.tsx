@@ -3,7 +3,7 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Instrument_Sans, Instrument_Serif, JetBrains_Mono, Figtree, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { Navbar } from '@/components/Navbar/Navbar'
+import { NavbarWrapper } from '@/components/Navbar/NavbarWrapper'
 import './globals.css'
 
 const instrumentSans = Instrument_Sans({
@@ -47,7 +47,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" data-scroll-behavior="smooth" className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} ${figtree.variable} ${inter.variable}`}>
         <body className="font-sans antialiased bg-black text-white">
-          <Navbar />
+          <NavbarWrapper />
           {children}
           <Analytics />
         </body>
