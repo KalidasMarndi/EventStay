@@ -15,6 +15,10 @@ import {
   Plane,
   Map,
   LifeBuoy,
+  ShieldCheck,
+  Award,
+  Globe,
+  Grid,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -125,46 +129,70 @@ const micrositeSteps = [
 
 const featureCards = [
   {
-    icon: CalendarDays,
-    category: "Event Management",
-    title: "Centralized Events",
-    description: "Create and manage destination weddings, corporate offsites, and group stays from a single dashboard.",
-    detail: "Custom microsites & timelines",
-  },
-  {
-    icon: Building,
-    category: "Stays & Inventory",
-    title: "Room Allocations",
-    description: "Hold contracted rooms, define packages, and track live availability without touching a spreadsheet.",
-    detail: "Real-time room tracking",
+    icon: Plane,
+    category: "Arrival & Departure",
+    title: "Airport VIP Services",
+    description: "Fast-track security, exclusive lounge access, personal meet-and-greet and priority airport assistance.",
+    detail: "VIP LOUNGES",
+    image: "https://images.unsplash.com/photo-1540339832862-4745ea79c7ee?auto=format&fit=crop&w=1600&q=85", // luxury terminal
+    span: "col-span-12 lg:col-span-6",
+    layout: "horizontal",
+    number: "01"
   },
   {
     icon: ClipboardCheck,
-    category: "Guest Bookings",
-    title: "Seamless Journey",
-    description: "Guests view your branded event page, select their stay, and receive immediate confirmations.",
-    detail: "Self-serve booking flow",
+    category: "Travel Compliance",
+    title: "Visa & Documentation",
+    description: "End-to-end assistance for group visas, permits, documentation and travel compliance.",
+    detail: "GLOBAL VISAS",
+    image: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?auto=format&fit=crop&w=800&q=85", // travel documents/desk
+    span: "col-span-12 lg:col-span-6",
+    layout: "horizontal",
+    number: "02"
   },
   {
-    icon: CreditCard,
-    category: "Payments",
-    title: "Direct Collections",
-    description: "Securely process room payments and deposits from guests right when they book their stay.",
-    detail: "Integrated processing",
+    icon: MapPin,
+    category: "Logistics",
+    title: "Ground Transfers",
+    description: "Premium chauffeurs, private cars, group coaches and seamless logistics from arrival to departure.",
+    detail: "CHAUFFEURS",
+    image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=85", // luxury car
+    span: "col-span-12 md:col-span-4",
+    layout: "compact",
+    number: "03"
   },
   {
-    icon: Map,
-    category: "Destinations",
-    title: "Location Guides",
-    description: "Guide your guests with rich venue details, local recommendations, and travel itineraries.",
-    detail: "Venue & map integration",
+    icon: Building,
+    category: "Accommodations",
+    title: "Premium Stays",
+    description: "Handpicked hotels, resorts, villas and accommodations for comfort, convenience and unforgettable stays.",
+    detail: "LUXURY STAYS",
+    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=85", // luxury resort
+    span: "col-span-12 md:col-span-4",
+    layout: "vertical",
+    number: "04"
   },
   {
     icon: LifeBuoy,
-    category: "Travel Support",
-    title: "Guest Assistance",
-    description: "Provide dedicated support for guest inquiries, special requests, and seamless arrival coordination.",
-    detail: "Concierge capabilities",
+    category: "Concierge",
+    title: "24/7 Travel Support",
+    description: "Round-the-clock assistance before, during and after the journey for your peace of mind.",
+    detail: "ALWAYS ON",
+    image: "https://images.unsplash.com/photo-1556745753-b2904692b3cd?auto=format&fit=crop&w=800&q=85", // concierge desk
+    span: "col-span-12 md:col-span-4",
+    layout: "compact",
+    number: "05"
+  },
+  {
+    icon: CalendarDays,
+    category: "Experiences",
+    title: "Events & Experiences",
+    description: "Curated activities, gala dinners, entertainment and local experiences tailored to the group.",
+    detail: "CURATED EVENTS",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=85", // elegant dinner
+    span: "col-span-12",
+    layout: "footer",
+    number: "06"
   }
 ];
 
@@ -223,7 +251,8 @@ export function FeaturesSection() {
   const activeUpdate = liveUpdates[updateIndex];
 
   return (
-    <section id="features" ref={sectionRef} className="relative bg-black text-white" aria-label="EventStay product features">
+    <>
+      <section id="features" ref={sectionRef} className="relative bg-black text-white" aria-label="EventStay product features">
       <audio ref={audioRef} src={HOTEL_AMBIENCE} loop preload="none" />
 
       <div className="sticky top-0 h-screen overflow-hidden">
@@ -343,145 +372,250 @@ export function FeaturesSection() {
             })}
           </div>
 
-          <div className="mt-24 mb-12">
-            <span className="mb-6 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
-              <span className="h-px w-6 bg-white/30" /> Core Capabilities
+          </div>
+        </div>
+      </section>
+
+      <section className="relative w-full overflow-hidden bg-[#faf9f6] pb-20 pt-16 md:pb-28 md:pt-24 border-t border-black/5">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2400&q=85" alt="Luxury destination" className="h-full w-full object-cover object-center opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-[#faf9f6]/95" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-white/60" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-12">
+          <div className="mb-10 text-center mx-auto max-w-3xl flex flex-col items-center">
+            <span className="mb-4 inline-flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#d97706] font-medium">
+              OUR PRODUCTS
             </span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight">Built for every stage of your event.</h2>
-            <p className="mt-6 text-white/60 text-base md:text-lg max-w-2xl leading-relaxed">From initial room blocks to the final guest arrival, EventStay provides the tools to manage group travel effortlessly.</p>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-zinc-900 drop-shadow-sm">Everything your <span className="text-[#d97706] italic pr-1">event</span> needs.</h2>
+            <p className="mt-5 text-zinc-600 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">From planning to execution, we provide end-to-end solutions for unforgettable events and seamless travel experiences.</p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-12 flex flex-wrap items-center justify-center gap-3 text-xs tracking-wide">
+            <button className="flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-2.5 text-white shadow-xl shadow-black/10 transition-transform hover:scale-105"><div className="grid grid-cols-2 gap-0.5"><div className="h-1.5 w-1.5 bg-[#eab308] rounded-sm"/><div className="h-1.5 w-1.5 bg-[#eab308] rounded-sm"/><div className="h-1.5 w-1.5 bg-[#eab308] rounded-sm"/><div className="h-1.5 w-1.5 bg-[#eab308] rounded-sm"/></div> All Products</button>
+            <button className="flex items-center gap-2 rounded-xl bg-white/70 backdrop-blur-md px-5 py-2.5 text-zinc-600 border border-black/5 hover:bg-white shadow-sm transition-all hover:scale-105"><CalendarDays className="h-3.5 w-3.5 text-zinc-400" /> Planning</button>
+            <button className="flex items-center gap-2 rounded-xl bg-white/70 backdrop-blur-md px-5 py-2.5 text-zinc-600 border border-black/5 hover:bg-white shadow-sm transition-all hover:scale-105"><Plane className="h-3.5 w-3.5 text-zinc-400" /> Travel</button>
+            <button className="flex items-center gap-2 rounded-xl bg-white/70 backdrop-blur-md px-5 py-2.5 text-zinc-600 border border-black/5 hover:bg-white shadow-sm transition-all hover:scale-105"><Building className="h-3.5 w-3.5 text-zinc-400" /> Stays</button>
+            <button className="flex items-center gap-2 rounded-xl bg-white/70 backdrop-blur-md px-5 py-2.5 text-zinc-600 border border-black/5 hover:bg-white shadow-sm transition-all hover:scale-105"><MapPin className="h-3.5 w-3.5 text-zinc-400" /> Experiences</button>
+            <button className="flex items-center gap-2 rounded-xl bg-white/70 backdrop-blur-md px-5 py-2.5 text-zinc-600 border border-black/5 hover:bg-white shadow-sm transition-all hover:scale-105"><LifeBuoy className="h-3.5 w-3.5 text-zinc-400" /> Support</button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">
             {featureCards.map((card, idx) => {
               const Icon = card.icon;
-              return (
-                <article
-                  key={idx}
-                  className="group relative flex flex-col justify-between rounded-[24px] border border-white/10 bg-[#0a0a0a]/80 p-8 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-2 hover:border-white/30 hover:bg-[#111]/95 hover:shadow-2xl"
-                >
-                  <div className="absolute inset-0 overflow-hidden rounded-[24px] opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute -inset-[100%] bg-gradient-to-br from-white/[0.04] to-transparent" />
-                  </div>
-
-                  <div className="relative z-10">
-                    <div className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/60 transition-colors duration-500 group-hover:border-[#eab308]/40 group-hover:bg-[#eab308]/10 group-hover:text-[#eab308]">
-                      <Icon className="h-6 w-6" />
+              
+              if (card.layout === "horizontal") {
+                return (
+                  <article key={idx} className={`${card.span} group relative overflow-hidden rounded-[24px] border border-white/60 bg-[#faf9f6]/95 backdrop-blur-xl shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-[#eab308]/40 hover:shadow-2xl flex flex-col md:flex-row min-h-[320px] md:min-h-[380px]`}>
+                    <div className="md:w-1/2 flex flex-col justify-center p-8 lg:p-12 relative z-10 order-2 md:order-1">
+                      <div className="flex items-center gap-4 mb-6">
+                        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d97706]">{card.number}</p>
+                        <div className="h-px w-6 bg-black/10" />
+                        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d97706] font-medium">{card.category}</p>
+                      </div>
+                      
+                      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-black/5 bg-white shadow-sm text-zinc-700 transition-all duration-500 group-hover:border-[#eab308]/30 group-hover:bg-[#fef9c3] group-hover:text-[#d97706]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      
+                      <h3 className="mb-4 font-display text-4xl tracking-tight text-zinc-900">{card.title}</h3>
+                      <p className="mb-8 text-sm leading-relaxed text-zinc-600 max-w-sm">{card.description}</p>
+                      
+                      <Link href="/create-event" className="mt-auto inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-zinc-500 transition-colors group-hover:text-[#d97706]">
+                        Explore {card.category.split(' ')[0]} <ArrowUpRight className="h-3 w-3" />
+                      </Link>
                     </div>
                     
-                    <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/45 transition-colors duration-500 group-hover:text-[#eab308]/80">
-                      {card.category}
-                    </p>
+                    <div className="md:w-1/2 relative overflow-hidden h-[240px] md:h-auto border-b md:border-b-0 md:border-l border-black/5 order-1 md:order-2">
+                      <img src={card.image} alt={card.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-black/40 via-black/10 to-transparent opacity-60" />
+                      <div className="absolute bottom-6 right-6 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                        <span className="rounded-full bg-white/90 backdrop-blur-md border border-white/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.15em] text-zinc-800 shadow-sm">✓ {card.detail}</span>
+                      </div>
+                    </div>
+                  </article>
+                );
+              }
+              
+              if (card.layout === "vertical") {
+                return (
+                  <article key={idx} className={`${card.span} group relative overflow-hidden rounded-[24px] border border-white/60 bg-[#faf9f6]/95 backdrop-blur-xl shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-[#eab308]/40 hover:shadow-2xl min-h-[380px] flex flex-col`}>
+                    <div className="p-8 lg:p-10 flex-1 flex flex-col">
+                      <div className="flex items-center justify-between mb-8">
+                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/5 bg-white shadow-sm text-zinc-700 transition-all duration-500 group-hover:border-[#eab308]/30 group-hover:text-[#d97706]">
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <div className="text-right">
+                          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d97706] mb-1">{card.category}</p>
+                          <p className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">{card.number}</p>
+                        </div>
+                      </div>
+                      
+                      <h3 className="mb-3 font-display text-3xl tracking-tight text-zinc-900">{card.title}</h3>
+                      <p className="mb-6 text-sm leading-relaxed text-zinc-600">{card.description}</p>
+                      
+                      <div className="mt-auto pt-4 flex items-center justify-between border-t border-black/5">
+                        <Link href="/create-event" className="font-mono text-[9px] uppercase tracking-[0.15em] text-zinc-500 transition-colors group-hover:text-[#d97706]">Explore Stays</Link>
+                        <span className="opacity-0 transition-opacity duration-500 group-hover:opacity-100 rounded bg-[#fef9c3] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-[#d97706] border border-[#eab308]/20">{card.detail}</span>
+                      </div>
+                    </div>
                     
-                    <h3 className="mb-5 font-display text-3xl tracking-tight text-white transition-colors duration-500 group-hover:text-white">
-                      {card.title}
-                    </h3>
+                    <div className="h-[180px] relative overflow-hidden border-t border-black/5">
+                      <img src={card.image} alt={card.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                  </article>
+                );
+              }
+              
+              if (card.layout === "compact") {
+                return (
+                  <article key={idx} className={`${card.span} group relative overflow-hidden rounded-[24px] border border-white/60 bg-[#faf9f6]/95 backdrop-blur-xl shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-[#eab308]/40 hover:shadow-2xl min-h-[300px] flex flex-col`}>
+                    <div className="p-8 flex-1 flex flex-col z-10 relative bg-gradient-to-b from-[#faf9f6] via-[#faf9f6]/90 to-transparent">
+                      <div className="flex items-center gap-3 mb-6">
+                        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-400">{card.number}</p>
+                        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d97706] font-medium">{card.category}</p>
+                      </div>
+                      
+                      <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-black/5 text-zinc-700 shadow-sm transition-transform duration-500 group-hover:scale-110 group-hover:text-[#d97706]">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      
+                      <h3 className="mb-3 font-display text-2xl tracking-tight text-zinc-900">{card.title}</h3>
+                      <p className="text-xs leading-relaxed text-zinc-600">{card.description}</p>
+                    </div>
                     
-                    <p className="text-sm leading-relaxed text-white/50 transition-colors duration-500 group-hover:text-white/70">
-                      {card.description}
-                    </p>
+                    <div className="absolute inset-0 top-1/3 overflow-hidden rounded-b-[24px]">
+                      <img src={card.image} alt={card.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+                      
+                      <div className="absolute bottom-6 left-6 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                        <Link href="/create-event" className="font-mono text-[9px] uppercase tracking-[0.15em] text-white">Explore <ArrowUpRight className="inline h-3 w-3" /></Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              }
+              
+              // footer layout
+              return (
+                <article key={idx} className={`${card.span} group relative overflow-hidden rounded-[24px] border border-white/60 bg-[#faf9f6]/95 backdrop-blur-xl shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-[#eab308]/40 hover:shadow-2xl min-h-[300px] flex items-center p-8 lg:p-12 mt-2`}>
+                  <div className="absolute inset-0 right-1/2 overflow-hidden hidden md:block">
+                     <img src={card.image} alt={card.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#faf9f6]/80 to-[#faf9f6]/100" />
                   </div>
                   
-                  <div className="relative z-10 mt-10 border-t border-white/10 pt-5 transition-colors duration-500 group-hover:border-white/20">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/30 transition-colors duration-500 group-hover:text-white/60">
-                      → {card.detail}
-                    </p>
+                  <div className="relative z-10 w-full md:w-1/2 md:ml-auto md:pl-12 flex flex-col justify-center">
+                    <div className="flex items-center gap-4 mb-6">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d97706] font-medium">{card.category}</p>
+                      <div className="h-px w-8 bg-black/10" />
+                      <p className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">{card.number}</p>
+                    </div>
+                    
+                    <h3 className="mb-4 font-display text-4xl tracking-tight text-zinc-900">{card.title}</h3>
+                    <p className="mb-8 text-sm leading-relaxed text-zinc-600">{card.description}</p>
+                    
+                    <div className="flex flex-wrap items-center gap-5">
+                      <Link href="/create-event" className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-3 text-[10px] font-medium uppercase tracking-[0.15em] text-white transition-all hover:bg-[#d97706] hover:shadow-lg hover:-translate-y-0.5">
+                        {card.detail} <ArrowUpRight className="h-3 w-3" />
+                      </Link>
+                      <div className="flex items-center gap-2 text-zinc-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                        <Icon className="h-3.5 w-3.5 text-[#d97706]" />
+                        <span className="font-mono text-[9px] uppercase tracking-[0.1em]">Event assistance</span>
+                      </div>
+                    </div>
                   </div>
                 </article>
               );
             })}
           </div>
 
-          <div id="guest-experience" className="mt-16 grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">What guests see</p>
-              <h3 className="mt-4 font-display text-4xl md:text-5xl">The microsite, from cover image to Book your stay.</h3>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-white/60">A phone-sized path through the destination story, stay options, and a single booking action.</p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {micrositeSteps.map((step, index) => (
-                  <button
-                    key={step.id}
-                    type="button"
-                    onClick={() => setPhoneStep(index)}
-                    className={`rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] ${
-                      phoneStep === index ? "border-[#eab308] text-[#eab308]" : "border-white/15 text-white/50"
-                    }`}
-                  >
-                    {step.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-center lg:justify-end">
-              <div className="relative w-[260px] rounded-[36px] border border-white/20 bg-black p-3 shadow-2xl">
-                <div className="absolute left-1/2 top-2 h-5 w-20 -translate-x-1/2 rounded-full bg-white/10" />
-                <div className="overflow-hidden rounded-[28px] bg-[#111]">
-                  {phoneStep === 0 && (
-                    <div className="relative h-[520px]">
-                      <img src={eventType.cover} alt="" className="h-full w-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                      <div className="absolute bottom-0 p-5">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/70">{eventType.destination} · {eventType.dates}</p>
-                        <p className="mt-2 font-display text-3xl">{eventType.couple}</p>
-                        <p className="mt-2 text-xs text-white/70">{eventType.venue}</p>
-                      </div>
-                    </div>
-                  )}
-                  {phoneStep === 1 && (
-                    <div className="flex h-[520px] flex-col p-5">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/40">Stay options</p>
-                      <div className="mt-4 space-y-3">
-                        {["Sea View Room", "Garden Villa", "Family Suite"].map((room, index) => (
-                          <div key={room} className={`rounded-2xl border p-4 ${index === 0 ? "border-[#eab308]/60 bg-[#eab308]/10" : "border-white/10 bg-white/5"}`}>
-                            <p className="text-sm">{room}</p>
-                            <p className="mt-1 text-xs text-white/50">{index === 0 ? "4 remaining" : index === 1 ? "2 remaining" : "Waitlist"}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {phoneStep === 2 && (
-                    <div className="relative flex h-[520px] flex-col justify-end p-5">
-                      <img src={eventType.cover} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
-                      <div className="relative rounded-2xl border border-white/15 bg-black/70 p-4 backdrop-blur-md">
-                        <p className="font-display text-2xl">Book your stay</p>
-                        <p className="mt-2 text-xs text-white/60">{eventType.roomsBooked} rooms already held for this event.</p>
-                        <div className="mt-4 rounded-full bg-[#eab308] px-4 py-3 text-center text-xs font-medium uppercase tracking-[0.12em] text-black">Confirm booking</div>
-                      </div>
-                    </div>
-                  )}
+          {/* Trust Strip */}
+          <div className="mt-16 mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-white/60 bg-[#faf9f6]/95 p-6 backdrop-blur-xl shadow-sm md:px-10 md:py-8 lg:flex-nowrap">
+              
+              <div className="flex w-full items-center gap-4 lg:w-auto">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm border border-black/5 text-[#d97706]">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-display text-lg tracking-tight text-zinc-900">Secure & Reliable</p>
+                  <p className="text-xs text-zinc-500">Bank-level payment security</p>
                 </div>
               </div>
+              
+              <div className="hidden h-10 w-px bg-black/5 lg:block" />
+              
+              <div className="flex w-full items-center gap-4 lg:w-auto">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm border border-black/5 text-[#d97706]">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-display text-lg tracking-tight text-zinc-900">Group Experts</p>
+                  <p className="text-xs text-zinc-500">Dedicated event coordinators</p>
+                </div>
+              </div>
+              
+              <div className="hidden h-10 w-px bg-black/5 lg:block" />
+              
+              <div className="flex w-full items-center gap-4 lg:w-auto">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm border border-black/5 text-[#d97706]">
+                  <Award className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-display text-lg tracking-tight text-zinc-900">Best Price Guarantee</p>
+                  <p className="text-xs text-zinc-500">Negotiated wholesale rates</p>
+                </div>
+              </div>
+              
+              <div className="hidden h-10 w-px bg-black/5 lg:block" />
+              
+              <div className="flex w-full items-center gap-4 lg:w-auto">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm border border-black/5 text-[#d97706]">
+                  <Globe className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-display text-lg tracking-tight text-zinc-900">Global Reach</p>
+                  <p className="text-xs text-zinc-500">50+ Worldwide destinations</p>
+                </div>
+              </div>
+              
             </div>
           </div>
-
-          <div className="mt-16 overflow-hidden rounded-full border border-white/10 bg-white/[0.04] px-5 py-3">
-            <p className="text-center text-xs uppercase tracking-[0.16em] text-white/70">Built for weddings, offsites, conferences, and group stays</p>
+          
+          {/* Closing Statement */}
+          <div className="mt-24 mb-16 text-center">
+             <h2 className="font-display text-5xl md:text-6xl tracking-tight text-zinc-900">Everything handled.<br/><span className="text-zinc-400 italic">Nothing overlooked.</span></h2>
+             <p className="mt-6 text-zinc-600 max-w-xl mx-auto">From the moment your guests receive their invite until they arrive safely back home, EventStay ensures a flawless, high-end travel experience.</p>
+             <div className="mt-10 flex items-center justify-center gap-4">
+                <Link href="/create-event" className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-8 py-4 text-[11px] font-medium uppercase tracking-[0.15em] text-white transition-all hover:bg-[#d97706] hover:shadow-xl hover:-translate-y-1">Start Planning Now <ArrowUpRight className="h-4 w-4" /></Link>
+             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="sticky bottom-0 z-40 border-t border-white/10 bg-black/85 px-6 py-4 backdrop-blur-xl md:px-12">
+        </div>
+      </section>
+
+      <div className="sticky bottom-0 z-40 border-t border-black/5 bg-white/95 px-6 py-4 backdrop-blur-xl md:px-12 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
         <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <p className="font-display text-2xl md:text-3xl">Your event deserves one place for every stay.</p>
+          <p className="font-display text-xl md:text-2xl text-zinc-900">Your event deserves one place for every stay.</p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <Link href="/create-event" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#eab308] px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-black">Create an event <ArrowUpRight className="h-4 w-4" /></Link>
-            <Link href="#guest-experience" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-white">View guest experience <ArrowUpRight className="h-4 w-4" /></Link>
+            <Link href="/create-event" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#d97706] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-zinc-900 transition-colors">Create an event <ArrowUpRight className="h-4 w-4" /></Link>
+            <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-zinc-50 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 hover:bg-white hover:border-black/20 transition-colors">Back to top</button>
           </div>
         </div>
       </div>
 
       <div aria-live="polite" className={`pointer-events-none fixed bottom-24 right-5 z-50 w-[min(360px,calc(100vw-40px))] transition-all duration-500 ${isUpdateVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}>
-        <div className="rounded-2xl border border-white/15 bg-[#111]/95 p-4 shadow-2xl backdrop-blur-xl">
+        <div className="rounded-2xl border border-black/5 bg-white/95 p-4 shadow-2xl backdrop-blur-xl">
           <div className="flex gap-3">
-            <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${activeUpdate.tone === "inventory" ? "bg-amber-300" : "bg-[#eab308]"} shadow-[0_0_10px_currentColor]`} />
+            <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${activeUpdate.tone === "inventory" ? "bg-amber-300" : "bg-[#d97706]"} shadow-[0_0_10px_currentColor]`} />
             <div>
-              <p className="text-sm font-medium text-white">{activeUpdate.label}</p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/50">{activeUpdate.detail}</p>
+              <p className="text-sm font-medium text-zinc-900">{activeUpdate.label}</p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">{activeUpdate.detail}</p>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </>
   );
 }
