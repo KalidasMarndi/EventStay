@@ -13,6 +13,7 @@ const navLinks = [
   { index: "05", label: "Create an Event",  href: "/create-event"      },
   { index: "06", label: "Travel Support", href: "/travel-support"      },
   { index: "07", label: "Destination",  href: "/destinations" },
+  { index: "08", label: "About Us", href: "/about-us" },
 ];
 
 function LiveClock() {

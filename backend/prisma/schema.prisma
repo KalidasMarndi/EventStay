@@ -199,16 +199,26 @@ model Stay {
 }
 
 model StayPackage {
-  id             String   @id @default(cuid())
-  eventId        String
-  stayId         String
-  name           String // e.g., "Sea View Room"
-  description    String?
-  price          Float
-  availableRooms Int
-  capacity       Int      @default(2) // guests per room
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  eventId            String
+  stayId             String
+  name               String // e.g., "Sea View Room"
+  description        String?
+  price              Float
+  currency           String   @default("USD")
+  availableRooms     Int // Represents Total Allocation
+  bookedRooms        Int      @default(0)
+  heldRooms          Int      @default(0)
+  capacity           Int      @default(2) // guests per room
+  bookingDeadline    DateTime?
+  minimumStay        Int      @default(1)
+  maximumStay        Int?
+  inclusions         String[]
+  cancellationPolicy String?
+  paymentPolicy      String?
+  status             String   @default("ACTIVE") // ACTIVE, LOW_AVAILABILITY, SOLD_OUT, PAUSED, CLOSED
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   event    Event     @relation(fields: [eventId], references: [id])
   stay     Stay      @relation(fields: [stayId], references: [id])

@@ -2,42 +2,25 @@
 
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { Plane, FileCheck, Car, Briefcase, HeartHandshake, ShieldCheck } from "lucide-react";
+import { travelServicesData } from "@/data/services";
 
-const services = [
-  {
-    title: "Airport VIP Services",
-    description: "Fast-track security, exclusive lounge access, and personal meet-and-greet.",
-    icon: <Plane className="w-8 h-8 text-[#eab308]" />
-  },
-  {
-    title: "Visa & Documentation",
-    description: "End-to-end assistance for group visas, permits, and travel compliance.",
-    icon: <FileCheck className="w-8 h-8 text-[#eab308]" />
-  },
-  {
-    title: "Ground Transfers",
-    description: "Premium chauffeurs, group coaches, and seamless logistics from arrival to departure.",
-    icon: <Car className="w-8 h-8 text-[#eab308]" />
-  },
-  {
-    title: "Corporate Concierge",
-    description: "24/7 dedicated support for last-minute changes and VIP requests.",
-    icon: <Briefcase className="w-8 h-8 text-[#eab308]" />
-  },
-  {
-    title: "On-Site Coordination",
-    description: "Our experts on the ground ensuring your event runs perfectly.",
-    icon: <HeartHandshake className="w-8 h-8 text-[#eab308]" />
-  },
-  {
-    title: "Travel Insurance",
-    description: "Comprehensive coverage options to protect your group and your investment.",
-    icon: <ShieldCheck className="w-8 h-8 text-[#eab308]" />
-  }
+const icons = [
+  <Plane className="w-8 h-8 text-[#eab308]" />,
+  <FileCheck className="w-8 h-8 text-[#eab308]" />,
+  <Car className="w-8 h-8 text-[#eab308]" />,
+  <Briefcase className="w-8 h-8 text-[#eab308]" />,
+  <HeartHandshake className="w-8 h-8 text-[#eab308]" />,
+  <ShieldCheck className="w-8 h-8 text-[#eab308]" />
 ];
 
+const mappedServices = travelServicesData.map((s, idx) => ({
+  title: s.name,
+  description: s.fullDescription,
+  icon: icons[idx % icons.length]
+}));
+
 export function TravelSupportSection({ limit }: { limit?: number }) {
-  const displayServices = limit ? services.slice(0, limit) : services;
+  const displayServices = limit ? mappedServices.slice(0, limit) : mappedServices;
 
   return (
     <section className="relative w-full py-24 lg:py-32 bg-[#050505] overflow-hidden">

@@ -23,24 +23,17 @@ const organizerControls = [
   { title: "Preview mode", copy: "See the page as a guest before you send it." },
 ];
 
-const guestItinerary = [
-  {
-    day: "FRI · 14 FEB",
-    rows: [
-      { time: "14:00", title: "Guest check-in", venue: "Taj Exotica lobby" },
-      { time: "17:30", title: "Welcome high tea", venue: "Sea-view lawn" },
-      { time: "20:00", title: "Sangeet & dinner", venue: "Grand ballroom" },
-    ],
-  },
-  {
-    day: "SAT · 15 FEB",
-    rows: [
-      { time: "09:00", title: "Breakfast", venue: "Coral restaurant" },
-      { time: "16:30", title: "Wedding ceremony", venue: "Beachfront mandap" },
-      { time: "20:30", title: "Reception", venue: "Sunset deck" },
-    ],
-  },
-];
+import { eventsData } from "@/data/events";
+import { itineraryData } from "@/data/itinerary";
+
+const guestItinerary = Array.from(new Set(itineraryData.map(item => item.day))).map(day => ({
+  day,
+  rows: itineraryData.filter(item => item.day === day).map(item => ({
+    time: item.time,
+    title: item.title,
+    venue: item.location || "TBD"
+  }))
+}));
 
 export function MicrositeGuestSection() {
   const [isVisible, setIsVisible] = useState(false);

@@ -3,6 +3,7 @@
 import { type Destination } from "@/features/home/data/destinations";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Calendar, Users, Clock, Star } from "lucide-react";
+import { DestinationStaysSection } from "./DestinationStaysSection";
 
 export function DestinationDetailClient({ destination: dest }: { destination: Destination }) {
   return (
@@ -152,6 +153,9 @@ export function DestinationDetailClient({ destination: dest }: { destination: De
           </div>
         )}
       </section>
+      
+      {/* ── Accommodations / Stays ── */}
+      <DestinationStaysSection location={dest.location} />
     </main>
   );
 }

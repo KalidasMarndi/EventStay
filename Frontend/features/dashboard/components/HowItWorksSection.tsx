@@ -70,20 +70,6 @@ export function HowItWorksSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32 text-white"
     >
-      <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden">
-        <div className="sticky top-0 w-full h-screen">
-          <video
-            src="/Videos/135145-761273495.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-        </div>
-      </div>
-
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-white/[0.02] blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12">

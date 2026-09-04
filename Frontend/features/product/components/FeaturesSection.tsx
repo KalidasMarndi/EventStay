@@ -21,6 +21,7 @@ import {
   Grid,
 } from "lucide-react";
 import Link from "next/link";
+import { InventoryCapabilitySection } from "./InventoryCapabilitySection";
 
 const HOTEL_VIDEO = "https://cdn.pixabay.com/video/2022/10/16/135143-761273487_large.mp4";
 const HOTEL_AMBIENCE = "https://cdn.pixabay.com/download/audio/2026/07/08/audio_80df566438.mp3?filename=mirostar-real-estate-hotel-resort-560320.mp3";
@@ -375,6 +376,8 @@ export function FeaturesSection() {
           </div>
         </div>
       </section>
+
+      <InventoryCapabilitySection />
 
       <section className="relative w-full overflow-hidden bg-[#faf9f6] pb-20 pt-16 md:pb-28 md:pt-24 border-t border-black/5">
         <div className="absolute inset-0 z-0 pointer-events-none">

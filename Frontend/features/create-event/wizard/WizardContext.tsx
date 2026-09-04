@@ -2,73 +2,202 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-export type EventType = string;
+export type EventCategory = 
+  | "WEDDING" | "CORPORATE" | "CONFERENCE" | "MICE" 
+  | "INCENTIVE" | "CULTURAL" | "MUSIC" | "SPORTS" | "OTHER" | "";
 
-export interface EventDetails {
-  eventName: string;
-  category: string;
-  organization: string;
+export interface Accommodation {
+  id: string;
+  hotelName: string;
+  roomType: string;
+  roomsRequired: number;
+  guestsPerRoom: number;
+  checkIn: Date | null;
+  checkOut: Date | null;
+  rate: number;
+  currency: string;
+  mealPlan: string;
+}
+
+export interface Activity {
+  id: string;
+  time: string;
+  name: string;
+  location: string;
   description: string;
-  purpose: string;
-  specialRequirements: string;
 }
 
-export interface GuestsData {
-  adults: number;
-  children: number;
-  vip: number;
-  staff: number;
-  roomPreference: "single" | "double" | "twin" | "";
-  accessibility: string;
-  dietary: string;
+export interface ItineraryDay {
+  id: string;
+  dayNumber: number;
+  date: Date | null;
+  title: string;
+  activities: Activity[];
 }
 
-export interface DateData {
-  arrival: Date | null;
-  start: Date | null;
-  end: Date | null;
-  departure: Date | null;
-  flexible: boolean;
-}
-
-export interface TravelData {
-  flightSupport: boolean;
-  flightDetails?: {
-    departureCity: string;
-    destinationAirport: string;
-    departureDate: Date | null;
-    returnDate: Date | null;
-    travelers: number;
-    cabinClass: "economy" | "premium" | "business" | "first";
-    directPreferred: boolean;
-    flexibleTiming: boolean;
-  };
-  groundTransfer: boolean;
-  transferDetails?: {
-    pickup: string;
-    dropoff: string;
-    passengers: number;
-    luggage: number;
-    vehicleType: string;
-  };
-  airportVip: boolean;
-  vipDetails?: {
-    serviceLevel: string;
-  };
+export interface Experience {
+  id: string;
+  name: string;
+  date: Date | null;
+  guests: number;
+  time: string;
 }
 
 export interface WizardState {
   currentStep: number;
-  eventType: EventType;
-  eventDetails: EventDetails;
-  guests: GuestsData;
-  destinationId: string;
-  dates: DateData;
-  stayId: string;
-  travel: TravelData;
-  documents: { id: string; name: string; type: string; status: string }[];
-  services: string[];
+  
+  // Backend Persisted Fields (CreateEventDto)
+  title: string;
+  description: string;
+  category: EventCategory;
+  city: string;
+  venueId: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  capacity: number;
+  pricePerHead: number;
+  featuredImage: string;
+  status: string; 
+  tags: string[];
+
+  // Frontend State Placeholders
+  organizer: {
+    name: string;
+    email: string;
+    phone: string;
+    company: string;
+    billingContact: string;
+    billingEmail: string;
+  };
+  eventDetails: {
+    objective: string;
+    tagline: string;
+    internalRef: string;
+    poNumber: string;
+  };
+  guestConfig: {
+    vip: number;
+    adults: number;
+    children: number;
+    infants: number;
+    staff: number;
+    speakers: number;
+    organizers: number;
+    companions: number;
+    nationalities: string;
+    specialRequirements: string;
+  };
+  dateConfig: {
+    arrival: Date | null;
+    departure: Date | null;
+  };
+  venueConfig: {
+    name: string;
+    type: string;
+    address: string;
+    city: string;
+    country: string;
+    capacity: number;
+  };
+  accommodations: Accommodation[];
+  travel: {
+    flightSupport: boolean;
+    transfers: boolean;
+    arrivalAirport: string;
+    departureAirport: string;
+    vipTransfers: string;
+  };
+  airportTransfers: string[];
+  visa: {
+    visaAssistance: boolean;
+    passportVerification: boolean;
+    invitationLetters: boolean;
+    travelInsurance: boolean;
+  };
+  experiences: Experience[];
+  itinerary: ItineraryDay[];
+  budgetConfig: {
+    currency: string;
+    allocatedBudget: number;
+    estimatedCostPerGuest: number;
+  };
+  policies: {
+    bookingDeadline: Date | null;
+    paymentDeadline: Date | null;
+    cancellationPolicy: string;
+    refundPolicy: string;
+    minimumStay: number;
+  };
+  branding: {
+    primaryColor: string;
+    secondaryColor: string;
+    welcomeMessage: string;
+  };
+  guestExperience: {
+    showItinerary: boolean;
+    showHotels: boolean;
+    showTransfers: boolean;
+    allowBooking: boolean;
+    showFaqs: boolean;
+  };
+  internalNotes: string;
 }
+
+const defaultState: WizardState = {
+  currentStep: 1,
+  
+  title: "",
+  description: "",
+  category: "",
+  city: "",
+  venueId: "",
+  startDate: null,
+  endDate: null,
+  capacity: 0,
+  pricePerHead: 0,
+  featuredImage: "",
+  status: "DRAFT",
+  tags: [],
+
+  organizer: {
+    name: "", email: "", phone: "", company: "", billingContact: "", billingEmail: ""
+  },
+  eventDetails: {
+    objective: "", tagline: "", internalRef: "", poNumber: ""
+  },
+  guestConfig: {
+    vip: 0, adults: 0, children: 0, infants: 0, staff: 0, speakers: 0, organizers: 0, companions: 0, nationalities: "", specialRequirements: ""
+  },
+  dateConfig: {
+    arrival: null, departure: null
+  },
+  venueConfig: {
+    name: "", type: "", address: "", city: "", country: "", capacity: 0
+  },
+  accommodations: [],
+  travel: {
+    flightSupport: false, transfers: false, arrivalAirport: "", departureAirport: "", vipTransfers: ""
+  },
+  airportTransfers: [],
+  visa: {
+    visaAssistance: false, passportVerification: false, invitationLetters: false, travelInsurance: false
+  },
+  experiences: [],
+  itinerary: [],
+  budgetConfig: {
+    currency: "USD", allocatedBudget: 0, estimatedCostPerGuest: 0
+  },
+  policies: {
+    bookingDeadline: null, paymentDeadline: null, cancellationPolicy: "", refundPolicy: "", minimumStay: 1
+  },
+  branding: {
+    primaryColor: "#0F172A", secondaryColor: "#F8FAFC", welcomeMessage: ""
+  },
+  guestExperience: {
+    showItinerary: true, showHotels: true, showTransfers: false, allowBooking: true, showFaqs: true
+  },
+  internalNotes: ""
+};
 
 interface WizardContextType {
   state: WizardState;
@@ -79,77 +208,55 @@ interface WizardContextType {
   resetWizard: () => void;
 }
 
-const defaultState: WizardState = {
-  currentStep: 1,
-  eventType: "",
-  eventDetails: {
-    eventName: "",
-    category: "",
-    organization: "",
-    description: "",
-    purpose: "",
-    specialRequirements: "",
-  },
-  guests: {
-    adults: 0,
-    children: 0,
-    vip: 0,
-    staff: 0,
-    roomPreference: "",
-    accessibility: "",
-    dietary: "",
-  },
-  destinationId: "",
-  dates: {
-    arrival: null,
-    start: null,
-    end: null,
-    departure: null,
-    flexible: false,
-  },
-  stayId: "",
-  travel: {
-    flightSupport: false,
-    groundTransfer: false,
-    airportVip: false,
-  },
-  documents: [],
-  services: [],
-};
-
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
-const STORAGE_KEY = "eventstay_wizard_state";
+const STORAGE_KEY = "eventstay_wizard_v2";
 
 export function WizardProvider({ children, initialType }: { children: ReactNode; initialType?: string }) {
   const [state, setState] = useState<WizardState>(() => {
-    // Try to load from session storage (only on client)
     if (typeof window !== "undefined") {
       const stored = sessionStorage.getItem(STORAGE_KEY);
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          // Restore Date objects
-          if (parsed.dates) {
-             parsed.dates.arrival = parsed.dates.arrival ? new Date(parsed.dates.arrival) : null;
-             parsed.dates.start = parsed.dates.start ? new Date(parsed.dates.start) : null;
-             parsed.dates.end = parsed.dates.end ? new Date(parsed.dates.end) : null;
-             parsed.dates.departure = parsed.dates.departure ? new Date(parsed.dates.departure) : null;
+          
+          // Rehydrate Dates
+          if (parsed.startDate) parsed.startDate = new Date(parsed.startDate);
+          if (parsed.endDate) parsed.endDate = new Date(parsed.endDate);
+          if (parsed.dateConfig?.arrival) parsed.dateConfig.arrival = new Date(parsed.dateConfig.arrival);
+          if (parsed.dateConfig?.departure) parsed.dateConfig.departure = new Date(parsed.dateConfig.departure);
+          if (parsed.policies?.bookingDeadline) parsed.policies.bookingDeadline = new Date(parsed.policies.bookingDeadline);
+          if (parsed.policies?.paymentDeadline) parsed.policies.paymentDeadline = new Date(parsed.policies.paymentDeadline);
+          
+          if (parsed.accommodations) {
+            parsed.accommodations = parsed.accommodations.map((a: any) => ({
+              ...a,
+              checkIn: a.checkIn ? new Date(a.checkIn) : null,
+              checkOut: a.checkOut ? new Date(a.checkOut) : null,
+            }));
           }
-          if (parsed.travel?.flightDetails) {
-             parsed.travel.flightDetails.departureDate = parsed.travel.flightDetails.departureDate ? new Date(parsed.travel.flightDetails.departureDate) : null;
-             parsed.travel.flightDetails.returnDate = parsed.travel.flightDetails.returnDate ? new Date(parsed.travel.flightDetails.returnDate) : null;
+          if (parsed.experiences) {
+            parsed.experiences = parsed.experiences.map((e: any) => ({
+              ...e,
+              date: e.date ? new Date(e.date) : null,
+            }));
           }
-          return { ...defaultState, ...parsed, ...(initialType && !parsed.eventType ? { eventType: initialType } : {}) };
+          if (parsed.itinerary) {
+            parsed.itinerary = parsed.itinerary.map((d: any) => ({
+              ...d,
+              date: d.date ? new Date(d.date) : null,
+            }));
+          }
+
+          return { ...defaultState, ...parsed, ...(initialType && !parsed.category ? { category: initialType as EventCategory } : {}) };
         } catch (e) {
           console.error("Failed to parse stored wizard state", e);
         }
       }
     }
-    return { ...defaultState, ...(initialType ? { eventType: initialType } : {}) };
+    return { ...defaultState, ...(initialType ? { category: initialType as EventCategory } : {}) };
   });
 
-  // Save to session storage whenever state changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -161,7 +268,7 @@ export function WizardProvider({ children, initialType }: { children: ReactNode;
   };
 
   const nextStep = () => {
-    setState((prev) => ({ ...prev, currentStep: Math.min(prev.currentStep + 1, 12) }));
+    setState((prev) => ({ ...prev, currentStep: Math.min(prev.currentStep + 1, 21) }));
   };
 
   const prevStep = () => {
