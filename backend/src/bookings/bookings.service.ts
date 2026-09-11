@@ -7,11 +7,19 @@ import { PrismaService } from '../database/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { PaginationDto, paginate } from '../common/dto/pagination.dto';
 
+import { InventoryLockerService } from '../inventory/inventory-locker.service';
+
 @Injectable()
 export class BookingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly lockerService: InventoryLockerService,
+  ) {}
 
-  async create(dto: CreateBookingDto, userId: string) {
+  async create(dto: CreateBookingDto, userId?: string) {
+    // Generate premium booking reference EVS-XXXXXX
+    const bookingReference = `EVS-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
     // Use a transaction to atomically decrement seats and create the booking
     return this.prisma.$transaction(async (tx) => {
       // Use Postgres FOR UPDATE to lock the row and prevent race conditions
@@ -68,36 +76,60 @@ export class BookingsService {
             message: `Only ${stayPackage.availableRooms} room(s) available`,
           });
         }
+        // Verify the hold exists and belongs to the user
+        if (dto.stayPackageHoldId) {
+          const isValidHold = await this.lockerService.verifyHold(
+            dto.stayPackageHoldId, 
+            dto.stayPackageId, 
+            dto.stayPackageQuantity, 
+            userId || dto.guestSessionId || 'anonymous'
+          );
+          if (!isValidHold) {
+            throw new BadRequestException({
+              code: 'INVALID_OR_EXPIRED_HOLD',
+              message: 'The inventory hold is invalid or has expired',
+            });
+          }
+        } else {
+          // In a fully strict system, we could mandate a holdId.
+          // For now, if no holdId is provided, we just rely on standard FOR UPDATE locking.
+        }
+
         stayPackageAmount = stayPackage.price * dto.stayPackageQuantity;
         totalAmount += stayPackageAmount;
 
-        await tx.stayPackage.update({
-          where: { id: dto.stayPackageId },
-          data: { availableRooms: { decrement: dto.stayPackageQuantity } },
-        });
+        // Remove the decrement logic. It will be handled upon Payment verification
+        // (confirmBooking method) in Phase 7.
       }
 
       const booking = await tx.booking.create({
         data: {
-          userId,
+          userId: userId || null,
+          guestName: dto.guestName,
+          guestEmail: dto.guestEmail,
+          guestPhone: dto.guestPhone,
+          guestCountry: dto.guestCountry,
           eventId: dto.eventId,
           quantity: dto.quantity,
           stayPackageId: dto.stayPackageId,
           stayPackageQuantity: dto.stayPackageQuantity ?? 0,
+          holdId: dto.stayPackageHoldId,
           totalAmount,
           notes: dto.notes,
           status: 'PENDING',
+          bookingReference,
         },
         include: {
-          event: { select: { id: true, title: true, startDate: true } },
+          event: { select: { id: true, title: true, startDate: true, slug: true, featuredImage: true } },
           stayPackage: { select: { id: true, name: true } },
         },
       });
 
-      await tx.event.update({
-        where: { id: dto.eventId },
-        data: { availableSeats: { decrement: dto.quantity } },
-      });
+      // Removed event availableSeats decrement logic here. It will be handled 
+      // in confirmBooking.
+      
+      // Removed lockerService.releaseHold here. Hold will be verified and released
+      // when payment is successful.
 
       return booking;
     });
@@ -144,6 +176,22 @@ export class BookingsService {
     return booking;
   }
 
+  async findByReference(reference: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { bookingReference: reference },
+      include: { 
+        event: { select: { id: true, title: true, startDate: true, slug: true, featuredImage: true, venue: true } },
+        stayPackage: { select: { id: true, name: true, stay: true } }
+      },
+    });
+    if (!booking)
+      throw new NotFoundException({
+        code: 'BOOKING_NOT_FOUND',
+        message: 'Booking not found',
+      });
+    return booking;
+  }
+
   async cancel(id: string, userId: string) {
     const booking = await this.prisma.booking.findFirst({
       where: { id, userId },
@@ -175,6 +223,51 @@ export class BookingsService {
           data: { availableRooms: { increment: booking.stayPackageQuantity } },
         });
       }
+      return updated;
+    });
+  }
+
+  async confirmBooking(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const booking = await tx.booking.findUnique({
+        where: { id },
+        include: { event: true, stayPackage: true },
+      });
+
+      if (!booking) {
+        throw new NotFoundException('Booking not found');
+      }
+
+      if (booking.status === 'CONFIRMED') {
+        return booking; // Idempotent response
+      }
+
+      // Decrement inventory
+      if (booking.stayPackageId && booking.stayPackageQuantity > 0) {
+        await tx.stayPackage.update({
+          where: { id: booking.stayPackageId },
+          data: {
+            availableRooms: { decrement: booking.stayPackageQuantity },
+            bookedRooms: { increment: booking.stayPackageQuantity },
+          },
+        });
+      }
+
+      await tx.event.update({
+        where: { id: booking.eventId },
+        data: { availableSeats: { decrement: booking.quantity } },
+      });
+
+      // Release hold if exists
+      if (booking.holdId) {
+        await this.lockerService.releaseHold(booking.holdId);
+      }
+
+      const updated = await tx.booking.update({
+        where: { id },
+        data: { status: 'CONFIRMED' },
+      });
+
       return updated;
     });
   }

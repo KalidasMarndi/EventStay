@@ -1,35 +1,33 @@
-import * as common from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
+import { CreatePaymentDto } from './dto/create-payment.dto';
+import { VerifyPaymentDto } from './dto/verify-payment.dto';
 import { Public } from '../common/decorators/public.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
-import type { Request } from 'express';
 
 @ApiTags('Payments')
-@common.Controller('v1/payments')
+@Controller('v1/payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
-  @ApiBearerAuth()
-  @common.UseGuards(RolesGuard)
-  @common.Post(':bookingId/create-session')
+  @Public()
+  @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a payment session for a booking' })
-  createSession(@common.Param('bookingId') bookingId: string) {
-    return this.paymentsService.createPaymentSession(bookingId);
+  @ApiResponse({ status: 201, description: 'Payment session created.' })
+  @ApiResponse({ status: 400, description: 'Invalid or expired hold.' })
+  @ApiResponse({ status: 404, description: 'Booking not found.' })
+  async createPayment(@Body() dto: CreatePaymentDto) {
+    return this.paymentsService.createPayment(dto);
   }
 
   @Public()
-  @common.Post('webhook')
-  @ApiOperation({ summary: 'Stripe webhook endpoint for payment updates' })
-  async stripeWebhook(
-    @common.Req() req: common.RawBodyRequest<Request>,
-    @common.Headers('stripe-signature') signature: string,
-  ) {
-    // Note: ensure the Nest app is configured to parse raw bodies for this route
-    const raw = req.rawBody;
-    if (!raw) {
-      throw new Error('Raw body not available on request. Check NestJS rawBody configuration.');
-    }
-    return this.paymentsService.handleStripeWebhook(signature, raw);
+  @Post('verify')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify payment and confirm booking' })
+  @ApiResponse({ status: 200, description: 'Payment verified and booking confirmed.' })
+  @ApiResponse({ status: 400, description: 'Payment verification failed.' })
+  async verifyPayment(@Body() dto: VerifyPaymentDto) {
+    return this.paymentsService.verifyPayment(dto);
   }
 }

@@ -14,6 +14,7 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { IdempotencyInterceptor } from '../common/interceptors/idempotency.interceptor';
 import { UseInterceptors } from '@nestjs/common';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('Bookings')
 @ApiBearerAuth()
@@ -33,11 +34,19 @@ export class BookingsController {
     return this.bookingsService.findById(id, user.id);
   }
 
+  @Public()
+  @Get('reference/:ref')
+  @ApiOperation({ summary: 'Get a booking by reference' })
+  findByReference(@Param('ref') ref: string) {
+    return this.bookingsService.findByReference(ref);
+  }
+
+  @Public()
   @Post()
   @UseInterceptors(IdempotencyInterceptor)
-  @ApiOperation({ summary: 'Create a booking for an event' })
-  create(@Body() dto: CreateBookingDto, @CurrentUser() user: { id: string }) {
-    return this.bookingsService.create(dto, user.id);
+  @ApiOperation({ summary: 'Create a booking for an event (Public)' })
+  create(@Body() dto: CreateBookingDto, @CurrentUser() user?: { id: string }) {
+    return this.bookingsService.create(dto, user?.id);
   }
 
   @Patch(':id/cancel')

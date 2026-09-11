@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsOptional, Min } from 'class-validator';
+import { IsString, IsInt, IsOptional, Min, IsEmail } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -24,6 +24,36 @@ export class CreateBookingDto {
   @IsInt()
   @Min(1)
   stayPackageQuantity?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  stayPackageHoldId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  guestSessionId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  guestName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsEmail()
+  guestEmail?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  guestPhone?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  guestCountry?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

@@ -141,7 +141,7 @@ export class EventsService {
     return event;
   }
 
-  async findBySlug(slug: string) {
+  async findBySlug(slug: string, includeUnpublished = false) {
     const event = await this.prisma.event.findUnique({
       where: { slug },
       include: {
@@ -152,14 +152,66 @@ export class EventsService {
           include: { user: { select: { id: true, name: true, avatar: true } } },
         },
         _count: { select: { bookings: true } },
+        stayPackages: {
+          include: { stay: true }
+        }
       },
     });
-    if (!event)
+
+    if (!event) {
       throw new NotFoundException({
         code: 'EVENT_NOT_FOUND',
         message: 'Event not found',
       });
+    }
+
+    if (!includeUnpublished && event.status !== 'PUBLISHED') {
+      throw new NotFoundException({
+        code: 'EVENT_UNPUBLISHED',
+        message: 'This event is currently unavailable.',
+      });
+    }
+
     return event;
+  }
+
+  async updateMicrosite(id: string, micrositeConfig: any, organizerId: string) {
+    await this.assertOwnershipOrAdmin(id, organizerId);
+    return this.prisma.event.update({
+      where: { id },
+      data: {
+        micrositeConfig: micrositeConfig ?? Prisma.DbNull,
+      },
+    });
+  }
+
+  async publishEvent(id: string, organizerId: string) {
+    await this.assertOwnershipOrAdmin(id, organizerId);
+    
+    // Validate requirements
+    const event = await this.findById(id);
+    if (!event.title || !event.slug || !event.startDate || !event.endDate || !event.venueId) {
+      throw new BadRequestException('Complete the required event information before publishing.');
+    }
+
+    return this.prisma.event.update({
+      where: { id },
+      data: {
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+      },
+    });
+  }
+
+  async unpublishEvent(id: string, organizerId: string) {
+    await this.assertOwnershipOrAdmin(id, organizerId);
+    return this.prisma.event.update({
+      where: { id },
+      data: {
+        status: 'UNPUBLISHED',
+        unpublishedAt: new Date(),
+      },
+    });
   }
 
   async update(id: string, dto: UpdateEventDto, organizerId: string) {

@@ -68,4 +68,25 @@ export class InventoryController {
   remove(@Param('id') id: string) {
     return this.inventoryService.remove(id);
   }
+
+  @Post(':id/hold')
+  @ApiOperation({ summary: 'Create a temporary hold on inventory' })
+  // Should ideally have a user guard or public session token. For now allow public with a mock userId
+  @Public() 
+  holdInventory(
+    @Param('id') id: string,
+    @Body('quantity') quantity: number,
+    @Body('userId') userId: string // In production, get from CurrentUser decorator
+  ) {
+    if (!quantity || quantity <= 0) throw new Error('Valid quantity is required');
+    const uId = userId || 'anonymous-session';
+    return this.inventoryService.holdInventory(id, quantity, uId);
+  }
+
+  @Delete('holds/:holdId')
+  @ApiOperation({ summary: 'Release a temporary hold' })
+  @Public()
+  releaseHold(@Param('holdId') holdId: string) {
+    return this.inventoryService.releaseHold(holdId);
+  }
 }

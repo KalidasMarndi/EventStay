@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Put,
   Delete,
   Body,
   Param,
@@ -43,8 +44,8 @@ export class EventsController {
   @Public()
   @Get('slug/:slug')
   @ApiOperation({ summary: 'Get a single event by slug' })
-  findBySlug(@Param('slug') slug: string) {
-    return this.eventsService.findBySlug(slug);
+  findBySlug(@Param('slug') slug: string, @Query('preview') preview?: boolean) {
+    return this.eventsService.findBySlug(slug, preview === true || preview === 'true' as any);
   }
 
   @Public()
@@ -71,6 +72,31 @@ export class EventsController {
     @CurrentUser() user: { id: string },
   ) {
     return this.eventsService.update(id, dto, user.id);
+  }
+
+  @Put(':id/microsite')
+  @Roles(UserRole.ORGANIZER, UserRole.ADMIN)
+  @ApiOperation({ summary: '[Organizer] Update event microsite configuration' })
+  updateMicrosite(
+    @Param('id') id: string,
+    @Body() micrositeConfig: any,
+    @CurrentUser() user: { id: string },
+  ) {
+    return this.eventsService.updateMicrosite(id, micrositeConfig, user.id);
+  }
+
+  @Post(':id/publish')
+  @Roles(UserRole.ORGANIZER, UserRole.ADMIN)
+  @ApiOperation({ summary: '[Organizer] Publish an event microsite' })
+  publishEvent(@Param('id') id: string, @CurrentUser() user: { id: string }) {
+    return this.eventsService.publishEvent(id, user.id);
+  }
+
+  @Post(':id/unpublish')
+  @Roles(UserRole.ORGANIZER, UserRole.ADMIN)
+  @ApiOperation({ summary: '[Organizer] Unpublish an event microsite' })
+  unpublishEvent(@Param('id') id: string, @CurrentUser() user: { id: string }) {
+    return this.eventsService.unpublishEvent(id, user.id);
   }
 
   @Delete(':id')

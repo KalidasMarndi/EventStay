@@ -20,6 +20,7 @@ enum UserRole {
 enum EventStatus {
   DRAFT
   PUBLISHED
+  UNPUBLISHED
   CANCELLED
   COMPLETED
 }
@@ -130,6 +131,9 @@ model Event {
   status         EventStatus   @default(DRAFT)
   featuredImage  String?
   tags           String[]
+  micrositeConfig Json?
+  publishedAt    DateTime?
+  unpublishedAt  DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -233,9 +237,14 @@ model Booking {
   id                  String        @id @default(cuid())
   bookingReference    String        @unique @default(cuid())
   idempotencyKey      String?       @unique
-  userId              String
+  userId              String?
+  guestName           String?
+  guestEmail          String?
+  guestPhone          String?
+  guestCountry        String?
   eventId             String
   stayPackageId       String? // Optional stay package
+  holdId              String? // Track active Redis hold
   status              BookingStatus @default(PENDING)
   quantity            Int           @default(1) // Event tickets
   stayPackageQuantity Int           @default(0) // Number of rooms
@@ -245,7 +254,7 @@ model Booking {
   updatedAt           DateTime      @updatedAt
 
   // Relations
-  user        User         @relation(fields: [userId], references: [id])
+  user        User?        @relation(fields: [userId], references: [id])
   event       Event        @relation(fields: [eventId], references: [id])
   stayPackage StayPackage? @relation(fields: [stayPackageId], references: [id])
   payments    Payment[]
