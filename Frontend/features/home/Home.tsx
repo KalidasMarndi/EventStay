@@ -2,6 +2,7 @@ import { HeroSection } from "@/features/home/components/HeroSection";
 import { Footer } from "@/components/Footer/Footer";
 import { PremiumDestinationsSection } from "@/features/home/components/PremiumDestinationsSection";
 import { EventStayOverviewSection } from "@/features/home/components/EventStayOverviewSection";
+import { TravelServicesMosaicSection } from "@/features/home/components/TravelServicesMosaicSection";
 import "./Home.css";
 
 export function Home() {
@@ -10,6 +11,7 @@ export function Home() {
       <HeroSection />
       <EventStayOverviewSection />
       <PremiumDestinationsSection />
+      <TravelServicesMosaicSection />
       <Footer />
     </div>
   );

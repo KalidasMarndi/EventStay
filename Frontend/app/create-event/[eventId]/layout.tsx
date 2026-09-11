@@ -24,6 +24,7 @@ export default async function EventDashboardLayout({
     { label: "Bookings", href: `/create-event/${eventId}/bookings` },
     { label: "Guests", href: `/create-event/${eventId}/guests` },
     { label: "Payments", href: `/create-event/${eventId}/payments` },
+    { label: "Microsite", href: `/create-event/${eventId}/microsite` },
   ];
 
   return (

@@ -19,7 +19,10 @@ export const bookingsApi = {
   getById: (id: string, token: string) =>
     api.get<Booking>(`/bookings/${id}`, token),
 
-  create: (data: CreateBookingDto, token: string) =>
+  getByReference: (reference: string) =>
+    api.get<Booking>(`/bookings/reference/${reference}`),
+
+  create: (data: CreateBookingDto, token?: string | null) =>
     api.post<Booking>('/bookings', data, token),
 
   cancel: (id: string, token: string) =>

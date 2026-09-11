@@ -62,5 +62,13 @@ export const inventoryApi = {
 
   delete: async (id: string): Promise<void> => {
     return api.delete<void>(`/v1/inventory/${id}`);
+  },
+
+  holdInventory: async (id: string, quantity: number, userId?: string): Promise<any> => {
+    return api.post<any>(`/v1/inventory/${id}/hold`, { quantity, userId });
+  },
+
+  releaseHold: async (holdId: string): Promise<any> => {
+    return api.delete<any>(`/v1/inventory/holds/${holdId}`);
   }
 };

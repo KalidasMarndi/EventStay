@@ -7,7 +7,7 @@
 
 export type UserRole = 'USER' | 'ORGANIZER' | 'ADMIN';
 
-export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED' | 'COMPLETED';
+export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'UNPUBLISHED' | 'CANCELLED' | 'COMPLETED';
 
 export type EventCategory =
   | 'WEDDING'
@@ -77,6 +77,9 @@ export interface Event {
   status: EventStatus;
   featuredImage?: string;
   tags: string[];
+  micrositeConfig?: Record<string, any>;
+  publishedAt?: string;
+  unpublishedAt?: string;
   createdAt: string;
   updatedAt: string;
 
@@ -120,7 +123,11 @@ export interface StayPackage {
 export interface Booking {
   id: string;
   bookingReference: string;
-  userId: string;
+  userId?: string;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  guestCountry?: string;
   eventId: string;
   stayPackageId?: string;
   status: BookingStatus;
@@ -196,6 +203,12 @@ export interface CreateBookingDto {
   quantity: number;
   stayPackageId?: string;
   stayPackageQuantity?: number;
+  stayPackageHoldId?: string;
+  guestSessionId?: string;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  guestCountry?: string;
   notes?: string;
 }
 

@@ -40,4 +40,13 @@ export const eventsApi = {
 
   delete: (id: string, token: string) =>
     api.delete<void>(`/events/${id}`, token),
+
+  updateMicrosite: (id: string, micrositeConfig: any, token: string) =>
+    api.put<Event>(`/events/${id}/microsite`, micrositeConfig, token),
+
+  publish: (id: string, token: string) =>
+    api.post<Event>(`/events/${id}/publish`, {}, token),
+
+  unpublish: (id: string, token: string) =>
+    api.post<Event>(`/events/${id}/unpublish`, {}, token),
 };
