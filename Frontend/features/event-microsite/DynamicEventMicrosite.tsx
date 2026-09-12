@@ -6,6 +6,7 @@ import { ArrowRight, MapPin, Calendar, Users, Hotel, ArrowUpRight } from "lucide
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { GuestBookingWidget } from "./components/GuestBookingWidget";
+import { TravelServicesSection } from "./components/TravelServicesSection";
 
 interface DynamicEventMicrositeProps {
   event: Event & { micrositeConfig?: any; stayPackages?: any[] };
@@ -152,6 +153,11 @@ export function DynamicEventMicrosite({ event }: DynamicEventMicrositeProps) {
               ))}
             </div>
           </section>
+        )}
+
+        {/* TRAVEL SERVICES SECTION */}
+        {config.enableTravel && (
+          <TravelServicesSection eventSlug={event.slug} />
         )}
 
         {/* VENUE SECTION */}

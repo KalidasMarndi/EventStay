@@ -14,6 +14,7 @@ datasource db {
 enum UserRole {
   USER
   ORGANIZER
+  STAFF
   ADMIN
 }
 
@@ -61,6 +62,22 @@ enum MediaType {
   IMAGE
   VIDEO
   DOCUMENT
+}
+
+enum ServiceType {
+  FLIGHT
+  AIRPORT_VIP
+  TRANSFER
+  VISA
+  EXPERIENCE
+  TRAVEL_SUPPORT
+}
+
+enum ServiceStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  COMPLETED
 }
 
 // ─── Models ──────────────────────────────────────────────────────────────────
@@ -143,7 +160,8 @@ model Event {
   bookings     Booking[]
   reviews      Review[]
   media        Media[]
-  stayPackages StayPackage[]
+  stayPackages   StayPackage[]
+  travelServices TravelService[]
 
   @@index([slug])
   @@index([city])
@@ -231,6 +249,40 @@ model StayPackage {
   @@index([eventId])
   @@index([stayId])
   @@map("stay_packages")
+}
+
+model TravelService {
+  id          String        @id @default(cuid())
+  eventId     String
+  type        ServiceType
+  name        String
+  description String?
+  status      ServiceStatus @default(ACTIVE)
+  destination String?
+  provider    String?
+  price       Float?
+  currency    String        @default("INR")
+  capacity    Int?
+  startDate   DateTime?
+  endDate     DateTime?
+  time        String?       // Pickup time, start time, etc.
+  location    String?       // Meeting point, pickup location, airport
+  notes       String?
+  inclusions  String[]
+  images      String[]
+  isVisible   Boolean       @default(true) // Visible to guests on microsite
+  
+  // Custom metadata for specific types (e.g. visa documents, flight numbers)
+  metadata    Json?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  event       Event         @relation(fields: [eventId], references: [id])
+
+  @@index([eventId])
+  @@index([type])
+  @@map("travel_services")
 }
 
 model Booking {

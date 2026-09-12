@@ -17,6 +17,8 @@ import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from './config/config.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { TravelModule } from './travel/travel.module';
 
 import { APP_GUARD } from '@nestjs/core';
 import { ClerkAuthGuard } from './common/guards/clerk-auth.guard';
@@ -47,6 +49,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     DatabaseModule,
     ConfigModule,
     InventoryModule,
+    DashboardModule,
+    TravelModule,
   ],
   controllers: [AppController],
   providers: [
